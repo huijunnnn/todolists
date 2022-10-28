@@ -1,11 +1,9 @@
 package com.example.todolists_springboot.domain;
 
 import lombok.*;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -13,8 +11,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "tb_tasks")
-@ToString(exclude ={"users"})
-@EqualsAndHashCode(exclude ={ "users"})
+@ToString(exclude = {"users"})
+@EqualsAndHashCode(exclude = {"users"})
 public class Task implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,15 +28,25 @@ public class Task implements Serializable {
     @ManyToMany(mappedBy = "tasks", fetch = FetchType.LAZY)
     private List<User> users;
 
+    public Task(Long taskId, String taskName, Boolean taskCompleted) {
+        this.taskId = taskId;
+        this.taskName = taskName;
+        this.taskCompleted = taskCompleted;
+    }
+
     public Task(String taskName) {
         this.taskName = taskName;
         this.taskCompleted = false;
     }
+
     public Task(String taskName, Boolean taskCompleted) {
         this.taskName = taskName;
         this.taskCompleted = taskCompleted;
 
     }
 
-
+    public Task(String taskName, List<User> users) {
+        this.taskName = taskName;
+        this.users = users;
+    }
 }

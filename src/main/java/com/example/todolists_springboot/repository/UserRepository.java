@@ -10,15 +10,19 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 @Repository
-public interface UserRepository extends JpaRepository<User,Long > {
-
-    //List<User> findByTask(Task task);
-
+public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = "SELECT u FROM User u WHERE u.userName = :name")
-    List<User> findByName(@Param("name")String name);
+    List<User> findByUserName(@Param("name") String name);
 
+    @Query(value = "SELECT u FROM User u JOIN u.tasks r WHERE r.taskId = :id")
+    List<User> findByTaskId(@Param("id") Long id);
 
+    @Query(value = "SELECT u FROM User u JOIN u.tasks r WHERE r.taskName = :name")
+    List<User> findByTaskName(@Param("name") String name);
+
+    @Query(value = "SELECT u FROM User u JOIN u.tasks r WHERE r = :task")
+    List<User> findByTask(@Param("task") Task task);
 
 
 }

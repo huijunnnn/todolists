@@ -1,11 +1,9 @@
 package com.example.todolists_springboot.domain;
 
 import lombok.*;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -28,7 +26,7 @@ public class User implements Serializable {
             CascadeType.PERSIST,
             CascadeType.MERGE
     })
-    @JoinTable(name="tasks_user",
+    @JoinTable(name = "tasks_user",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "task_id")
     )
@@ -38,4 +36,8 @@ public class User implements Serializable {
         this.userName = userName;
     }
 
+    public User(Long userId, String userName) {
+        this.userId = userId;
+        this.userName = userName;
+    }
 }
