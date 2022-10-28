@@ -8,9 +8,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@Data
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "tb_tasks")
+@ToString(exclude ={"users"})
+@EqualsAndHashCode(exclude ={ "users"})
 public class Task implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,60 +30,15 @@ public class Task implements Serializable {
     @ManyToMany(mappedBy = "tasks", fetch = FetchType.LAZY)
     private List<User> users;
 
-    //多对一
-//    @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.REMOVE})
-//    @JoinColumn(name = "user_id")
-//    private User user;
-
-
-    public Task() {
+    public Task(String taskName) {
+        this.taskName = taskName;
+        this.taskCompleted = false;
     }
-
     public Task(String taskName, Boolean taskCompleted) {
         this.taskName = taskName;
         this.taskCompleted = taskCompleted;
 
     }
 
-    public Long getTaskId() {
-        return taskId;
-    }
 
-    public void setTaskId(Long taskId) {
-        this.taskId = taskId;
-    }
-
-    public String getTaskName() {
-        return taskName;
-    }
-
-    public void setTaskName(String taskName) {
-        this.taskName = taskName;
-    }
-
-    public Boolean getTaskCompleted() {
-        return taskCompleted;
-    }
-
-    public void setTaskCompleted(Boolean taskCompleted) {
-        this.taskCompleted = taskCompleted;
-    }
-
-    public List<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<User> users) {
-        this.users = users;
-    }
-
-    @Override
-    public String toString() {
-        return "Task{" +
-                "taskId=" + taskId +
-                ", taskName='" + taskName + '\'' +
-                ", taskCompleted=" + taskCompleted +
-                ", users=" + users +
-                '}';
-    }
 }
