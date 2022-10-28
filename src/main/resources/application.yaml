@@ -9,9 +9,16 @@ spring:
   jpa:
     show-sql: true
     generate-ddl: true
+    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       format_sql: true
-      ddl-auto: create
+      ddl-auto: update
+      use-new-id-generator-mappings: false
+    properties:
+      hibernate:
+        dialect:
+          storage_enginez: innodb
+
 
 
 

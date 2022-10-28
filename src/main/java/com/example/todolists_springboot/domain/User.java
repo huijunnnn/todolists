@@ -1,10 +1,9 @@
 package com.example.todolists_springboot.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Data
@@ -12,19 +11,33 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name="tb_user")
-public class User {
+@ToString(exclude ={"tasks"} )
+@EqualsAndHashCode(exclude ={ "tasks"})
+public class User implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id")
     private Long userId;
 
     @Column(name = "user_name")
     private String userName;
 
-    //一对多
-    //默认方式是懒加载（提高查询性能）
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
+    @JoinTable(name = "tasks_user",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "task_id")
+    )
     private List<Task> tasks;
 
+    public User(String userName) {
+        this.userName = userName;
+    }
+
+    public User(Long userId, String userName) {
+        this.userId = userId;
+        this.userName = userName;
+    }
 }

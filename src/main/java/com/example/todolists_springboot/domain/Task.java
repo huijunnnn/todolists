@@ -3,14 +3,19 @@ package com.example.todolists_springboot.domain;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.List;
+
 @Data
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
 @Table(name = "tb_tasks")
-public class Task {
+@ToString(exclude = {"users"})
+@EqualsAndHashCode(exclude = {"users"})
+public class Task implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "task_id")
     private Long taskId;
 
@@ -20,9 +25,28 @@ public class Task {
     @Column(name = "task_completed")
     private Boolean taskCompleted;
 
-    //多对一
-    @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.REMOVE})
-    @JoinColumn(name = "user_id")
-    private User user;
+    @ManyToMany(mappedBy = "tasks", fetch = FetchType.LAZY)
+    private List<User> users;
 
+    public Task(Long taskId, String taskName, Boolean taskCompleted) {
+        this.taskId = taskId;
+        this.taskName = taskName;
+        this.taskCompleted = taskCompleted;
+    }
+
+    public Task(String taskName) {
+        this.taskName = taskName;
+        this.taskCompleted = false;
+    }
+
+    public Task(String taskName, Boolean taskCompleted) {
+        this.taskName = taskName;
+        this.taskCompleted = taskCompleted;
+
+    }
+
+    public Task(String taskName, List<User> users) {
+        this.taskName = taskName;
+        this.users = users;
+    }
 }
