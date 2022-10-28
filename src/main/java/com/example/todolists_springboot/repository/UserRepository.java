@@ -14,5 +14,11 @@ public interface UserRepository extends JpaRepository<User,Long > {
 
     //List<User> findByTask(Task task);
 
-    //List<User> findByName(String name);
+
+    @Query(value = "SELECT u FROM User u WHERE u.userName = :name")
+    List<User> findByName(@Param("name")String name);
+
+
+
+
 }
