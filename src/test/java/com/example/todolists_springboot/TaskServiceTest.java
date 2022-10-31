@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
@@ -64,5 +65,18 @@ public class TaskServiceTest {
         assertEquals(result,returnedTasks);
         verify(taskRepository).findByTaskCompleted(false);
     }
+    @Test
+    void should_update_the_task_by_id_when_the_task_exist(){
+        Task requestBody = new Task("task");
+        Task newTask = new Task(1L,"task",false);
+        Optional<Task> newTaskOptional = Optional.of(newTask);
+        when(taskRepository.findById(1L)).thenReturn(newTaskOptional);
+        when(taskRepository.save(newTask)).thenReturn(newTask);
+        Task result = taskService.updateTask(1L,requestBody);
+        assertEquals(result,newTask);
+        verify(taskRepository).findById(1L);
+        verify(taskRepository).save(requestBody);
+    }
+
 
 }
