@@ -25,4 +25,9 @@ public class TaskController {
     public List<Task> getTasks(@RequestParam(value = "completed", required = false) Boolean completed) {
         return taskService.getTasks(completed);
     }
+    @GetMapping("/{id}")
+    public Task updateTask(@PathVariable("id")Long id,@RequestBody Task task){
+        return taskService.updateTask(id,task);
+    }
+
 }
