@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/tasks")
 public class TaskController {
@@ -15,7 +17,12 @@ public class TaskController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public Task addTask(@RequestBody Task task){
-    return taskService.addTask(task);
+    public Task addTask(@RequestBody Task task) {
+        return taskService.addTask(task);
+    }
+
+    @GetMapping
+    public List<Task> getTasks(@RequestParam(value = "completed", required = false) Boolean completed) {
+        return taskService.getTasks(completed);
     }
 }
