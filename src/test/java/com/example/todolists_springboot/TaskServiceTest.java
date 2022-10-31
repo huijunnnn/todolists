@@ -1,6 +1,7 @@
 package com.example.todolists_springboot;
 
 import com.example.todolists_springboot.domain.Task;
+import com.example.todolists_springboot.handler.exception.TaskNotFoundException;
 import com.example.todolists_springboot.repository.TaskRepository;
 import com.example.todolists_springboot.service.TaskService;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -66,7 +68,7 @@ public class TaskServiceTest {
         verify(taskRepository).findByTaskCompleted(false);
     }
     @Test
-    void should_update_the_task_by_id_when_the_task_exist(){
+    void should_update_the_task_by_id_when_the_task_exists(){
         Task requestBody = new Task("task");
         Task newTask = new Task(1L,"task",false);
         Optional<Task> newTaskOptional = Optional.of(newTask);
@@ -77,6 +79,14 @@ public class TaskServiceTest {
         verify(taskRepository).findById(1L);
         verify(taskRepository).save(requestBody);
     }
+    @Test
+    void should_update_the_task_by_id_when_the_task_does_not_exist(){
+        Task requestBody = new Task("task");
+        Optional<Task> newTaskOptional = Optional.empty();
+        when(taskRepository.findById(1L)).thenReturn(newTaskOptional);
+        assertThrows(TaskNotFoundException.class,()->taskService.updateTask(1L,requestBody));
+        verify(taskRepository).findById(1L);
 
+    }
 
 }
