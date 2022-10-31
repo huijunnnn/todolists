@@ -95,5 +95,12 @@ public class TaskServiceTest {
         verify(taskRepository).findById(1L);
         verify(taskRepository).delete(taskOptional.get());
     }
+    @Test
+    void should_delete_the_task_when_the_task_dose_not_exist(){
+        Optional<Task> taskOptional = Optional.empty();
+        when(taskRepository.findById(1L)).thenReturn(taskOptional);
+        assertThrows(TaskNotFoundException.class,()->taskService.deleteTask(1L));
+        verify(taskRepository).findById(1L);
+    }
 
 }
