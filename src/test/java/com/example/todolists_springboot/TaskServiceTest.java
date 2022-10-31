@@ -52,7 +52,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    void should_get_all_the_tasks_when_the_parameter_is_assigned_to_true(){
+    public void should_get_all_the_tasks_when_the_parameter_is_assigned_to_true(){
         List<Task> returnedTasks = List.of(new Task(1L, "Test", true));
         when(taskRepository.findByTaskCompleted(true)).thenReturn(returnedTasks);
         List<Task> result = taskService.getTasks(true);
@@ -60,7 +60,7 @@ public class TaskServiceTest {
         verify(taskRepository).findByTaskCompleted(true);
     }
     @Test
-    void should_get_all_the_tasks_when_the_parameter_is_assigned_to_false(){
+    public void should_get_all_the_tasks_when_the_parameter_is_assigned_to_false(){
         List<Task> returnedTasks = List.of(new Task(1L, "Test", false));
         when(taskRepository.findByTaskCompleted(false)).thenReturn(returnedTasks);
         List<Task> result = taskService.getTasks(false);
@@ -68,7 +68,7 @@ public class TaskServiceTest {
         verify(taskRepository).findByTaskCompleted(false);
     }
     @Test
-    void should_update_the_task_by_id_when_the_task_exists(){
+    public void should_update_the_task_by_id_when_the_task_exists(){
         Task requestBody = new Task("task");
         Task newTask = new Task(1L,"task",false);
         Optional<Task> newTaskOptional = Optional.of(newTask);
@@ -80,7 +80,7 @@ public class TaskServiceTest {
         verify(taskRepository).save(requestBody);
     }
     @Test
-    void should_update_the_task_by_id_when_the_task_does_not_exist(){
+    public void should_update_the_task_by_id_when_the_task_does_not_exist(){
         Task requestBody = new Task("task");
         Optional<Task> newTaskOptional = Optional.empty();
         when(taskRepository.findById(1L)).thenReturn(newTaskOptional);
@@ -88,7 +88,7 @@ public class TaskServiceTest {
         verify(taskRepository).findById(1L);
     }
     @Test
-    void should_delete_the_task_when_the_task_exist(){
+    public void should_delete_the_task_when_the_task_exist(){
         Optional<Task> taskOptional = Optional.of(new Task(1L, "test", false));
         when(taskRepository.findById(1L)).thenReturn(taskOptional);
         taskService.deleteTask(1L);
@@ -96,7 +96,7 @@ public class TaskServiceTest {
         verify(taskRepository).delete(taskOptional.get());
     }
     @Test
-    void should_delete_the_task_when_the_task_dose_not_exist(){
+    public void should_delete_the_task_when_the_task_dose_not_exist(){
         Optional<Task> taskOptional = Optional.empty();
         when(taskRepository.findById(1L)).thenReturn(taskOptional);
         assertThrows(TaskNotFoundException.class,()->taskService.deleteTask(1L));
