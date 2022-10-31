@@ -11,6 +11,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -34,6 +36,16 @@ public class TaskServiceTest {
         Task result = taskService.addTask(newTask);
         assertEquals(result, returnedTask);
         verify(taskRepository).save(newTask);
+    }
+    @Test
+    public void should_get_all_the_tasks_when_there_is_no_parameters(){
+        List<Task> returnedTasks = List.of(new Task(1L, "Test", false),
+                new Task(2L, "Test", true));
+        when(taskRepository.findAll()).thenReturn(returnedTasks);
+        List<Task> result = taskService.getTasks(null);
+        System.out.println(result);
+        assertEquals(result,returnedTasks);
+        verify(taskRepository).findAll();
     }
 
 
