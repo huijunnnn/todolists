@@ -22,4 +22,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     @Query(value = "SELECT t FROM Task t JOIN t.users r WHERE r.userName = :name")
     List<Task> findByUserName(@Param("name") String name);
+
+    List<Task> findByTaskCompleted(Boolean completed);
+
 }
