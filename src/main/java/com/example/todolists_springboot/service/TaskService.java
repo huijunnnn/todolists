@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class TaskService {
@@ -32,6 +33,12 @@ public class TaskService {
 
     private List<Task> getTasksByStatus(Boolean completed) {
         return taskRepository.findByTaskCompleted(completed);
+    }
+    public Task updateTask(Long id, Task newTask){
+        Optional<Task> oldTask = taskRepository.findById(id);
+        Task task = oldTask.orElseThrow(TaskNotFoundException::new);
+        newTask.setTaskId(task.getTaskId());
+        return taskRepository.save(newTask);
     }
 
 }
