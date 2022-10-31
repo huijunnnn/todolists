@@ -1,6 +1,7 @@
 package com.example.todolists_springboot.service;
 
 import com.example.todolists_springboot.domain.Task;
+import com.example.todolists_springboot.handler.exception.TaskNotFoundException;
 import com.example.todolists_springboot.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
