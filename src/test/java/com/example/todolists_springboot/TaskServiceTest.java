@@ -1,8 +1,10 @@
 package com.example.todolists_springboot;
 
 import com.example.todolists_springboot.domain.Task;
+import com.example.todolists_springboot.domain.User;
 import com.example.todolists_springboot.handler.exception.TaskNotFoundException;
 import com.example.todolists_springboot.repository.TaskRepository;
+import com.example.todolists_springboot.repository.UserRepository;
 import com.example.todolists_springboot.service.TaskService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,6 +28,9 @@ public class TaskServiceTest {
 
     @Mock
     private TaskRepository taskRepository;
+
+    @Mock
+    private UserRepository userRepository;
 
     @InjectMocks
     private TaskService taskService;
@@ -102,5 +107,16 @@ public class TaskServiceTest {
         assertThrows(TaskNotFoundException.class,()->taskService.deleteTask(1L));
         verify(taskRepository).findById(1L);
     }
-
+    @Test
+    public void should_add_an_user_to_the_task_and_return_the_task() {
+        User user = new User("zhizhi");
+        List<User> users = List.of(user);
+        Task newTask = new Task("task1");
+        newTask.setUsers(users);
+        Task returnedTask = new Task(1L, "task1", false,users);
+        when(taskRepository.save(newTask)).thenReturn(returnedTask);
+        Task result = taskService.addTask(newTask);
+        assertEquals(result, returnedTask);
+        verify(taskRepository).save(newTask);
+    }
 }
