@@ -56,6 +56,13 @@ public class TaskServiceTest {
         assertEquals(result,returnedTasks);
         verify(taskRepository).findByTaskCompleted(true);
     }
-
+    @Test
+    void should_get_all_the_tasks_when_the_parameter_is_assigned_to_false(){
+        List<Task> returnedTasks = List.of(new Task(1L, "Test", false));
+        when(taskRepository.findByTaskCompleted(false)).thenReturn(returnedTasks);
+        List<Task> result = taskService.getTasks(false);
+        assertEquals(result,returnedTasks);
+        verify(taskRepository).findByTaskCompleted(false);
+    }
 
 }
