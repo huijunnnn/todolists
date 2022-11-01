@@ -31,10 +31,13 @@ public class UserService {
         return userRepository.findByUserName(name);
     }
 
-    private List<User> getUsersOfTaskByTaskId(Long id){
+    public Optional<User> getUserById(Long id){
+        return userRepository.findById(id);
+    }
+    public List<User> getUsersOfTaskByTaskId(Long id){
         return userRepository.findByTaskId(id);
     }
-    private List<User> getUsersOfTaskByTaskName(String name){
+    public List<User> getUsersOfTaskByTaskName(String name){
         return userRepository.findByTaskName(name);
     }
 
