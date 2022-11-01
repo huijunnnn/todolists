@@ -1,7 +1,9 @@
 package com.example.todolists_springboot.controller;
 
 import com.example.todolists_springboot.domain.Task;
+import com.example.todolists_springboot.domain.User;
 import com.example.todolists_springboot.service.TaskService;
+import com.example.todolists_springboot.service.TaskUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +16,10 @@ public class TaskController {
 
     @Autowired
     TaskService taskService;
+
+    @Autowired
+    TaskUserService taskUserService;
+
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -38,9 +44,18 @@ public class TaskController {
     }
 
     @GetMapping("/{keyword}")
-    public List<Task> getTasksByKeyword(@PathVariable("keyword") String keyword){
+    public List<Task> getTasksByKeyword(@PathVariable("keyword") String keyword) {
         return taskService.getTasksByKeyword(keyword);
     }
 
+    @GetMapping("/users/{id}")
+    public List<User> getAllUsersOfTaskByTaskId(@PathVariable("id") Long id) {
+        return taskUserService.getUsersOfTaskByTaskId(id);
+    }
+
+    @GetMapping("/users/{name}")
+    public List<User> getAllUsersOfTaskByTaskName(@PathVariable("name") String name) {
+        return taskUserService.getUsersOfTaskByTaskName(name);
+    }
 
 }
