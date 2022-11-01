@@ -62,5 +62,11 @@ public class UserController {
         return taskUserService.deleteAllTasksOfUserByUserId(id);
     }
 
+    @GetMapping("/{id}")
+    public List<Task> sharedTasksToUser(@RequestParam(value = "sharedId", required = true) Long sharedId,@PathVariable("id") Long id) {
+        return taskUserService.addSharedTasks(sharedId,id);
+    }
+
+
 
 }
