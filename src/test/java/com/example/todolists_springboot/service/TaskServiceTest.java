@@ -1,4 +1,4 @@
-package com.example.todolists_springboot;
+package com.example.todolists_springboot.service;
 
 import com.example.todolists_springboot.domain.Task;
 import com.example.todolists_springboot.domain.User;
@@ -51,7 +51,6 @@ public class TaskServiceTest {
                 new Task(2L, "Test", true));
         when(taskRepository.findAll()).thenReturn(returnedTasks);
         List<Task> result = taskService.getTasks(null);
-        System.out.println(result);
         assertEquals(result,returnedTasks);
         verify(taskRepository).findAll();
     }

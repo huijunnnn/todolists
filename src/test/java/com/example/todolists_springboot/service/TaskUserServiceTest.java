@@ -1,4 +1,4 @@
-package com.example.todolists_springboot;
+package com.example.todolists_springboot.service;
 
 import com.example.todolists_springboot.domain.Task;
 import com.example.todolists_springboot.domain.User;
