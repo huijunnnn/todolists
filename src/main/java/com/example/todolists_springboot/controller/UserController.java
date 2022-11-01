@@ -36,7 +36,7 @@ public class UserController {
         return userService.getUserById(id).get();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/update/{id}")
     public User updateUser(@PathVariable("id") Long id, @RequestBody User user) {
         return userService.updateUser(id, user);
     }
@@ -62,11 +62,10 @@ public class UserController {
         return taskUserService.deleteAllTasksOfUserByUserId(id);
     }
 
-    @GetMapping("/{id}")
-    public List<Task> sharedTasksToUser(@RequestParam(value = "sharedId", required = true) Long sharedId,@PathVariable("id") Long id) {
-        return taskUserService.addSharedTasks(sharedId,id);
+    @GetMapping("/shared/{id}")
+    public List<Task> sharedTasksToUser(@RequestParam(value = "sharedId", required = true) Long sharedId, @PathVariable("id") Long id) {
+        return taskUserService.addSharedTasks(sharedId, id);
     }
-
 
 
 }
