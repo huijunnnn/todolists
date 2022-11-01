@@ -46,6 +46,14 @@ public class UserController {
     public void deleteUser(@PathVariable("id") Long id) {
         userService.deleteUser(id);
     }
+    @GetMapping("/tasks/{id}")
+    public List<Task> getTasksByUserId(@PathVariable("id") Long id){
+        return taskUserService.getTasksOfUserByUserId(id);
+    }
+    @GetMapping("/tasks/{name}")
+    public List<Task> getTasksByUserName(@PathVariable("name") String name){
+        return taskUserService.getTasksOfUserByUserName(name);
+    }
 
 
 
