@@ -54,7 +54,10 @@ public class UserController {
     public List<Task> getTasksByUserName(@PathVariable("name") String name){
         return taskUserService.getTasksOfUserByUserName(name);
     }
-
+    @DeleteMapping("/tasks/{id}")
+    public Optional<User> deleteAllTasksOfUsers(@PathVariable("id") Long id){
+        return taskUserService.deleteAllTasksOfUserByUserId(id);
+    }
 
 
 }
