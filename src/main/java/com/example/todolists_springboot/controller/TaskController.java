@@ -16,7 +16,7 @@ public class TaskController {
     TaskService taskService;
 
     @PostMapping
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.CREATED)
     public Task addTask(@RequestBody Task task) {
         return taskService.addTask(task);
     }
