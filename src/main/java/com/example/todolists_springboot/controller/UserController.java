@@ -40,7 +40,14 @@ public class UserController {
     public User updateUser(@PathVariable("id") Long id, @RequestBody User user) {
         return userService.updateUser(id, user);
     }
-
+    @GetMapping("/create/{id}")
+    public User createTasksForUser(@PathVariable("id") Long id, @RequestBody Task task) {
+        return userService.createTaskForUser(id, task);
+    }
+    @GetMapping("/tasks/update/{id}")
+    public User updateTasksForUser(@PathVariable("id") Long id, @RequestBody Task task) {
+        return userService.updateTaskForUser(id, task);
+    }
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable("id") Long id) {
