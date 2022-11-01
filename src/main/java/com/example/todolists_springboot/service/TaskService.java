@@ -52,4 +52,7 @@ public class TaskService {
         }
     }
 
+    public List<Task> getTasksByKeyword(String keyword) {
+        return taskRepository.findByTaskKeyword(keyword);
+    }
 }

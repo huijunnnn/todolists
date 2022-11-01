@@ -36,4 +36,11 @@ public class TaskController {
     public void deleteTask(@PathVariable("id") Long id) {
         taskService.deleteTask(id);
     }
+
+    @GetMapping("/{keyword}")
+    public List<Task> getTasksByKeyword(@PathVariable("keyword") String keyword){
+        return taskService.getTasksByKeyword(keyword);
+    }
+
+
 }
