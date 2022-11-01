@@ -15,10 +15,11 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
-    public User addUser(User user){
+    public User addUser(User user) {
         return userRepository.save(user);
     }
-    public List<User> getUsers(){
+
+    public List<User> getUsers() {
         return getAllUsers();
 
     }
@@ -31,13 +32,15 @@ public class UserService {
         return userRepository.findByUserName(name);
     }
 
-    public Optional<User> getUserById(Long id){
+    public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
     }
-    public List<User> getUsersOfTaskByTaskId(Long id){
+
+    public List<User> getUsersOfTaskByTaskId(Long id) {
         return userRepository.findByTaskId(id);
     }
-    public List<User> getUsersOfTaskByTaskName(String name){
+
+    public List<User> getUsersOfTaskByTaskName(String name) {
         return userRepository.findByTaskName(name);
     }
 
