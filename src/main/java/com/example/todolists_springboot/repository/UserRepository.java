@@ -25,4 +25,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findByTask(@Param("task") Task task);
 
 
+    @Query(value = "UPDATE User u SET u.tasks = null")
+    void deleteAllTasks();
 }
