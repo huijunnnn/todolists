@@ -38,7 +38,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public User updateUser(@PathVariable("id") Long id, @RequestBody User user) {
-        return userService.updateUser(id,user);
+        return userService.updateUser(id, user);
     }
 
     @DeleteMapping("/{id}")
@@ -46,16 +46,19 @@ public class UserController {
     public void deleteUser(@PathVariable("id") Long id) {
         userService.deleteUser(id);
     }
+
     @GetMapping("/tasks/{id}")
-    public List<Task> getTasksByUserId(@PathVariable("id") Long id){
+    public List<Task> getTasksByUserId(@PathVariable("id") Long id) {
         return taskUserService.getTasksOfUserByUserId(id);
     }
+
     @GetMapping("/tasks/{name}")
-    public List<Task> getTasksByUserName(@PathVariable("name") String name){
+    public List<Task> getTasksByUserName(@PathVariable("name") String name) {
         return taskUserService.getTasksOfUserByUserName(name);
     }
+
     @DeleteMapping("/tasks/{id}")
-    public Optional<User> deleteAllTasksOfUsers(@PathVariable("id") Long id){
+    public Optional<User> deleteAllTasksOfUser(@PathVariable("id") Long id) {
         return taskUserService.deleteAllTasksOfUserByUserId(id);
     }
 
