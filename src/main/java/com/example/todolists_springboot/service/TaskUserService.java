@@ -11,9 +11,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import static java.util.stream.Stream.*;
+import static java.util.stream.Stream.of;
 
 @Service
 public class TaskUserService {
@@ -52,10 +51,10 @@ public class TaskUserService {
     public List<Task> addSharedTasks(Long sharedId, Long id) {
         List<Task> tasks1 = userRepository.findById(id).get().getTasks();
         List<Task> tasks2 = userRepository.findById(sharedId).get().getTasks();
-        if (tasks2==null){
+        if (tasks2 == null) {
             return taskRepository.findByUserId(id);
-        }else {
-            List<Task> tasks= of(tasks1, tasks2)
+        } else {
+            List<Task> tasks = of(tasks1, tasks2)
                     .flatMap(Collection::stream)
                     .distinct()
                     .collect(Collectors.toList());

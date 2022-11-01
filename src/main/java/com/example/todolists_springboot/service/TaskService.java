@@ -16,14 +16,15 @@ public class TaskService {
     @Autowired
     TaskRepository taskRepository;
 
-    public Task addTask(Task task){
+    public Task addTask(Task task) {
         task.setTaskCompleted(false);
         return taskRepository.save(task);
     }
-    public List<Task> getTasks(Boolean completed){
-        if (!Objects.isNull(completed)){
+
+    public List<Task> getTasks(Boolean completed) {
+        if (!Objects.isNull(completed)) {
             return getTasksByStatus(completed);
-        }else{
+        } else {
             return getAllTasks();
         }
     }
