@@ -4,8 +4,6 @@ import com.example.todolists_springboot.domain.Task;
 import com.example.todolists_springboot.domain.User;
 import com.example.todolists_springboot.handler.exception.TaskNotFoundException;
 import com.example.todolists_springboot.repository.TaskRepository;
-import com.example.todolists_springboot.repository.UserRepository;
-import com.example.todolists_springboot.service.TaskService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,9 +26,6 @@ public class TaskServiceTest {
 
     @Mock
     private TaskRepository taskRepository;
-
-    @Mock
-    private UserRepository userRepository;
 
     @InjectMocks
     private TaskService taskService;
@@ -112,10 +107,21 @@ public class TaskServiceTest {
         List<User> users = List.of(user);
         Task newTask = new Task("task1");
         newTask.setUsers(users);
-        Task returnedTask = new Task(1L, "task1", false,users);
+        Task returnedTask = new Task(1L, "task1", false, users);
         when(taskRepository.save(newTask)).thenReturn(returnedTask);
         Task result = taskService.addTask(newTask);
-        assertEquals(result, returnedTask);
+        assertEquals(returnedTask, result);
         verify(taskRepository).save(newTask);
     }
+
+    @Test
+    public void should_get_tasks_by_keyword() {
+        Task taskOne = new Task(1L, "task1", false);
+        Task taskTwo = new Task(2L, "task2", false);
+        when(taskRepository.findByTaskKeyword("task")).thenReturn(List.of(taskOne, taskTwo));
+        List<Task> result = taskService.getTasksByKeyword("task");
+        assertEquals(List.of(taskOne, taskTwo), result);
+        verify(taskRepository).findByTaskKeyword("task");
+    }
+
 }
