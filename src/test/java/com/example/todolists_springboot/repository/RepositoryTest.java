@@ -2,15 +2,12 @@ package com.example.todolists_springboot.repository;
 
 import com.example.todolists_springboot.domain.Task;
 import com.example.todolists_springboot.domain.User;
-import com.example.todolists_springboot.repository.TaskRepository;
-import com.example.todolists_springboot.repository.UserRepository;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +17,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@RunWith(SpringRunner.class)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest//注解的测试使用潜入式内存数据库
 public class RepositoryTest {
     @Autowired
@@ -32,7 +29,7 @@ public class RepositoryTest {
     @Autowired
     TestEntityManager entityManager;
 
-    @Before
+    @BeforeEach
     public void init() {
         User userOne = new User("小明");
         User userTwo = new User("小兰");
@@ -51,7 +48,6 @@ public class RepositoryTest {
 
     @Test
     public void should_add_an_user_with_no_tasks_and_return_the_user() {
-
         User userOne = new User("huijun");
         entityManager.persist(userOne);
         //userRepository.save(newUser);
@@ -62,7 +58,6 @@ public class RepositoryTest {
 
     @Test
     public void should_add_an_user_with_some_tasks_and_return_the_user() {
-
         User user1 = new User("zhizhi");
         Task task1 = new Task("task1", false);
         Task task2 = new Task("task2", false);
@@ -72,7 +67,6 @@ public class RepositoryTest {
         entityManager.persist(user1);
         assertEquals(4, userRepository.count());
         assertEquals(5, taskRepository.count());
-
     }
 
     @Test
@@ -86,7 +80,6 @@ public class RepositoryTest {
 
     @Test
     public void should_select_task_by_task_id_and_return_the_task() {
-
         assertEquals("task1", taskRepository.findById(1L).get().getTaskName());
         assertEquals("task2", taskRepository.findById(2L).get().getTaskName());
         assertEquals("task3", taskRepository.findById(3L).get().getTaskName());
@@ -103,7 +96,6 @@ public class RepositoryTest {
 
     @Test
     public void should_select_tasks_by_user_id_and_return_the_tasks() {
-
         Task task1 = new Task(1L, "task1", false);
         Task task2 = new Task(2L, "task2", false);
         assertEquals(Arrays.asList(task1, task2), taskRepository.findByUserId(1L));
@@ -111,7 +103,6 @@ public class RepositoryTest {
 
     @Test
     public void should_select_tasks_by_user_name_and_return_the_tasks() {
-
         Task task1 = new Task(1L, "task1", false);
         Task task2 = new Task(2L, "task2", false);
         assertEquals(Arrays.asList(task1, task2), taskRepository.findByUserName("小明"));
@@ -119,44 +110,35 @@ public class RepositoryTest {
 
     @Test
     public void should_select_tasks_by_user_and_return_the_tasks() {
-
         Task task1 = new Task(1L, "task1", false);
         Task task2 = new Task(2L, "task2", false);
         User userOne = new User(1L, "小明");
         assertEquals(Arrays.asList(task1, task2), taskRepository.findByUser(userOne));
-
     }
 
     @Test
     public void should_select_user_by_user_id_and_return_the_user() {
-
         assertEquals("小明", userRepository.findById(1L).get().getUserName());
         assertEquals("小兰", userRepository.findById(2L).get().getUserName());
         assertEquals("小花", userRepository.findById(3L).get().getUserName());
-
     }
 
     @Test
     public void should_select_users_by_task_id_and_return_the_users() {
-
         User userOne = new User(1L, "小明");
         User userThree = new User(3L, "小花");
         assertEquals(Arrays.asList(userOne, userThree), userRepository.findByTaskId(1L));
-
     }
 
     @Test
     public void should_select_users_by_task_name_and_return_the_users() {
-
         User userOne = new User(1L, "小明");
         User userThree = new User(3L, "小花");
         assertEquals(Arrays.asList(userOne, userThree), userRepository.findByTaskName("task1"));
-
     }
 
     @Test
     public void should_select_users_by_task_and_return_the_users() {
-
         User userOne = new User(1L, "小明");
         User userThree = new User(3L, "小花");
         Task task1 = new Task(1L, "task1", false);
@@ -164,10 +146,8 @@ public class RepositoryTest {
 
     }
 
-    //删除所有信息
     @Test
     public void should_delete_all_tasks_by_user_id_and_return_empty_list() {
-
         List<Task> tasks = taskRepository.findByUserId(1L);
         taskRepository.deleteAll(tasks);
         assertEquals(3, taskRepository.count());
@@ -175,11 +155,9 @@ public class RepositoryTest {
 
     @Test
     public void updtae_by_id() {
-
         Optional<User> user = userRepository.findById(2L);
         user.get().setUserName("zhizhi");
         assertEquals("zhizhi", userRepository.findById(2L).get().getUserName());
-
     }
 
 }
