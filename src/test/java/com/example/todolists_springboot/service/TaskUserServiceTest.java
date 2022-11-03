@@ -13,9 +13,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import static java.util.stream.Stream.of;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -51,6 +54,32 @@ public class TaskUserServiceTest {
         assertEquals(result, finalUser);
         verify(userRepository, times(2)).findById(1L);
     }
+    @Test
+    public void add_shared_tasks_to_the_user_and_when_sharedUser_tasks_exist_return_the_tasks(){
+        List<Task> tasks1 = List.of(new Task(1L, "task1", false));
+        User userOne = new User(1L,"zhizhi",tasks1);
+        List<Task> tasks2 = List.of(new Task(2L, "task2", false));
+        User userTwo = new User(2L,"lacy",tasks2);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(userOne));
+        when(userRepository.findById(2L)).thenReturn(Optional.of(userTwo));
+        List<Task> tasks = of(tasks1, tasks2)
+                .flatMap(Collection::stream)
+                .distinct()
+                .collect(Collectors.toList());
+        List<Task> resultedTasks = taskUserService.addSharedTasks(2L,1L);
+        assertEquals(tasks,resultedTasks);
 
+    }
+    @Test
+    public void add_shared_tasks_to_the_user_when_shardUser_tasks_not_exist_and_return_the_tasks(){
+        List<Task> tasks1 = List.of(new Task(1L, "task1", false));
+        User userOne = new User(1L,"zhizhi",tasks1);
+        User userTwo = new User(2L,"lacy");
+        when(userRepository.findById(1L)).thenReturn(Optional.of(userOne));
+        when(userRepository.findById(2L)).thenReturn(Optional.of(userTwo));
+        List<Task> resultedTasks = taskUserService.addSharedTasks(2L,1L);
+        assertEquals(tasks1,resultedTasks);
+
+    }
 
 }
