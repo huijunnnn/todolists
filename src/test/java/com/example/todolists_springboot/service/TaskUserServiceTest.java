@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -68,6 +69,8 @@ public class TaskUserServiceTest {
                 .collect(Collectors.toList());
         List<Task> resultedTasks = taskUserService.addSharedTasks(2L,1L);
         assertEquals(tasks,resultedTasks);
+        verify(userRepository,times(4)).findById(1L);
+        verify(userRepository,times(2)).findById(2L);
 
     }
     @Test
@@ -79,7 +82,36 @@ public class TaskUserServiceTest {
         when(userRepository.findById(2L)).thenReturn(Optional.of(userTwo));
         List<Task> resultedTasks = taskUserService.addSharedTasks(2L,1L);
         assertEquals(tasks1,resultedTasks);
+        verify(userRepository,times(3)).findById(1L);
+        verify(userRepository,times(2)).findById(2L);
 
     }
+    @Test
+    public void get_all_tasks_by_user_name_and_return_the_tasks(){
+        List<Task> taskOne = List.of(new Task(1L,"task1",false)
+                ,new Task(2L,"task2",false));
+        List<Task> taskTwo = List.of(new Task(2L,"task2",false));
+        List<User> users = List.of(new User(1L,"小明",taskOne),
+                new User(2L,"小兰",taskTwo));
+        when(userRepository.findAll()).thenReturn(users);
+        when(taskRepository.findByUserName("小明")).thenReturn(taskOne);
+        List<Task> resultTasks = taskUserService.getTasksOfUserByUserName("小明");
+        assertEquals(taskOne,resultTasks);
+        verify(taskRepository).findByUserName("小明");
 
+    }
+    @Test
+    public void get_all_tasks_by_user_id_and_return_the_tasks(){
+
+        List<Task> taskOne = List.of(new Task(1L,"task1",false)
+                ,new Task(2L,"task2",false));
+        List<Task> taskTwo = List.of(new Task(2L,"task2",false));
+        List<User> users = List.of(new User(1L,"小明",taskOne),
+                new User(2L,"小兰",taskTwo));
+        when(userRepository.findAll()).thenReturn(users);
+        when(taskRepository.findByUserId(1L)).thenReturn(taskOne);
+        List<Task> resultTasks = taskUserService.getTasksOfUserByUserId(1L);
+        assertEquals(taskOne,resultTasks);
+        verify(taskRepository).findByUserId(1L);
+    }
 }
