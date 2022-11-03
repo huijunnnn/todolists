@@ -4,7 +4,6 @@ import com.example.todolists_springboot.domain.Task;
 import com.example.todolists_springboot.domain.User;
 import com.example.todolists_springboot.repository.TaskRepository;
 import com.example.todolists_springboot.repository.UserRepository;
-import com.example.todolists_springboot.service.TaskUserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,7 +12,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -102,16 +100,44 @@ public class TaskUserServiceTest {
     }
     @Test
     public void get_all_tasks_by_user_id_and_return_the_tasks(){
-
-        List<Task> taskOne = List.of(new Task(1L,"task1",false)
-                ,new Task(2L,"task2",false));
-        List<Task> taskTwo = List.of(new Task(2L,"task2",false));
-        List<User> users = List.of(new User(1L,"小明",taskOne),
-                new User(2L,"小兰",taskTwo));
+        List<Task> taskOne = List.of(new Task(1L, "task1", false)
+                , new Task(2L, "task2", false));
+        List<Task> taskTwo = List.of(new Task(2L, "task2", false));
+        List<User> users = List.of(new User(1L, "小明", taskOne),
+                new User(2L, "小兰", taskTwo));
         when(userRepository.findAll()).thenReturn(users);
         when(taskRepository.findByUserId(1L)).thenReturn(taskOne);
         List<Task> resultTasks = taskUserService.getTasksOfUserByUserId(1L);
-        assertEquals(taskOne,resultTasks);
+        assertEquals(taskOne, resultTasks);
         verify(taskRepository).findByUserId(1L);
+    }
+
+    @Test
+    public void get_all_users_by_task_name_and_return_the_users() {
+        List<User> userOne = List.of(new User(1L, "小明"),
+                new User(2L, "小兰"));
+        List<User> userTwo = List.of(new User(2L, "小兰"));
+        List<Task> tasks = List.of(new Task(1L, "task1", false, userOne),
+                new Task(2L, "task2", false, userTwo));
+        when(taskRepository.findAll()).thenReturn(tasks);
+        when(userRepository.findByTaskName("task1")).thenReturn(userOne);
+        List<User> resultUsers = taskUserService.getUsersOfTaskByTaskName("task1");
+        assertEquals(userOne, resultUsers);
+        verify(userRepository).findByTaskName("task1");
+
+    }
+
+    @Test
+    public void get_all_users_by_task_id_and_return_the_users() {
+        List<User> userOne = List.of(new User(1L, "小明"),
+                new User(2L, "小兰"));
+        List<User> userTwo = List.of(new User(2L, "小兰"));
+        List<Task> tasks = List.of(new Task(1L, "task1", false, userOne),
+                new Task(2L, "task2", false, userTwo));
+        when(taskRepository.findAll()).thenReturn(tasks);
+        when(userRepository.findByTaskId(1L)).thenReturn(userOne);
+        List<User> resultUsers = taskUserService.getUsersOfTaskByTaskId(1L);
+        assertEquals(userOne, resultUsers);
+        verify(userRepository).findByTaskId(1L);
     }
 }
