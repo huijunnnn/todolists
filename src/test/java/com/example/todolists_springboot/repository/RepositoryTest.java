@@ -160,4 +160,10 @@ public class RepositoryTest {
         assertEquals("zhizhi", userRepository.findById(2L).get().getUserName());
     }
 
+    @Test
+    public void select_task_by_keyword() {
+        List<Task> tasks = taskRepository.findAll();
+        List<Task> result = taskRepository.findByTaskKeyword("task");
+        assertEquals(tasks, result);
+    }
 }
