@@ -2,6 +2,7 @@ package com.example.todolists_springboot.service;
 
 import com.example.todolists_springboot.domain.Task;
 import com.example.todolists_springboot.domain.User;
+import com.example.todolists_springboot.handler.exception.TaskNotFoundException;
 import com.example.todolists_springboot.handler.exception.UserNotFoundException;
 import com.example.todolists_springboot.repository.TaskRepository;
 import com.example.todolists_springboot.repository.UserRepository;
@@ -32,19 +33,46 @@ public class TaskUserService {
     }
 
     public List<Task> getTasksOfUserByUserId(Long id) {
-        return taskRepository.findByUserId(id);
+        //return taskRepository.findByUserId(id);
+        return userRepository.findTasksByUserId(id);
     }
 
     public List<Task> getTasksOfUserByUserName(String name) {
-        return taskRepository.findByUserName(name);
+
+        return userRepository.findTasksByUserName(name);
+    }
+
+    public List<Task> createTaskForUser(Long id, Task task) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isEmpty()) {
+            throw new UserNotFoundException();
+        }
+        Long taskId = task.getTaskId();
+        if(taskId != null){
+            Optional<Task> findTask = taskRepository.findById(taskId);
+           if(findTask.isEmpty()){
+               throw new TaskNotFoundException();
+           }
+           user.get().addTask(task);
+           userRepository.save(user.get());
+           return userRepository.findById(id).get().getTasks();
+        }
+           taskRepository.save(task);
+           Task savedTask = taskRepository.findLastTask();
+           user.get().addTask(savedTask);
+           userRepository.save(user.get());
+           return userRepository.findById(id).get().getTasks();
     }
 
     public Optional<User> deleteAllTasksOfUserByUserId(Long id) {
-        List<Task> tasks = userRepository.findById(id).get().getTasks();
+        Optional<User> oldUser = userRepository.findById(id);
+        User user = oldUser.orElseThrow(UserNotFoundException::new);
+        List<Task> tasks = user.getTasks();
         if (tasks == null) {
-            return userRepository.findById(id);
+            return oldUser;
         } else {
-            userRepository.deleteAllTasks();
+            user.setTasks(null);
+            userRepository.save(user);
             return userRepository.findById(id);
         }
     }
@@ -58,14 +86,29 @@ public class TaskUserService {
         List<Task> tasks1 = userRepository.findById(id).get().getTasks();
         List<Task> tasks2 = userRepository.findById(sharedId).get().getTasks();
         if (tasks2==null||tasks2.isEmpty()) {
-            return userRepository.findById(id).get().getTasks();
+            return tasks1;
         }else{
             List<Task> tasks = of(tasks1, tasks2)
                     .flatMap(Collection::stream)
                     .distinct()
                     .collect(Collectors.toList());
-            userRepository.findById(id).get().setTasks(tasks);
-            return userRepository.findById(id).get().getTasks();
+
+            userOne.get().setTasks(tasks);
+            userRepository.save(userOne.get());
+            return tasks;
+        }
+    }
+    public Task updateTaskForUser(Long user_id, Long task_id,Task newTask) {
+        Optional<User> user = userRepository.findById(user_id);
+        if (user.isEmpty()) {
+            throw new UserNotFoundException();
+        } else {
+            Task oldTask = taskRepository.findById(task_id).orElseThrow(TaskNotFoundException::new);
+            newTask.setTaskId(oldTask.getTaskId());
+            taskRepository.save(newTask);
+            user.get().addTask(newTask);
+            userRepository.save(user.get());
+            return newTask;
         }
     }
 

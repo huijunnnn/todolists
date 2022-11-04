@@ -43,7 +43,6 @@ public class TaskService {
         newTask.setTaskId(task.getTaskId());
         return taskRepository.save(newTask);
     }
-
     public void deleteTask(Long id) {
         Optional<Task> task = taskRepository.findById(id);
         if (task.isEmpty()) {
@@ -54,6 +53,11 @@ public class TaskService {
     }
 
     public List<Task> getTasksByKeyword(String keyword) {
+
         return taskRepository.findByTaskKeyword(keyword);
+    }
+
+    public Optional<Task> getTaskByTaskId(Long id) {
+        return taskRepository.findById(id);
     }
 }
