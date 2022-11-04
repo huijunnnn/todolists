@@ -1,9 +1,11 @@
 package com.example.todolists_springboot.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -22,15 +24,18 @@ public class User implements Serializable {
     @Column(name = "user_name")
     private String userName;
 
-    @ManyToMany(cascade = {
+
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {
             CascadeType.PERSIST,
             CascadeType.MERGE
     })
-    @JoinTable(name = "tasks_user",
+    @JoinTable(name = "user_tasks",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "task_id")
     )
-    private List<Task> tasks;
+    @JsonIgnore
+    private List<Task> tasks = new ArrayList<>();
 
     public User(String userName) {
         this.userName = userName;
@@ -40,4 +45,9 @@ public class User implements Serializable {
         this.userId = userId;
         this.userName = userName;
     }
+    public void addTask(Task task){
+        this.tasks.add(task);
+        task.getUsers().add(this);
+    }
+
 }
