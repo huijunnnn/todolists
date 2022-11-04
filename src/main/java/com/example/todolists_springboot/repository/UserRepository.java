@@ -24,7 +24,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "SELECT u FROM User u JOIN u.tasks r WHERE r = :task")
     List<User> findByTask(@Param("task") Task task);
 
+    @Query(value = "SELECT u.tasks FROM User u WHERE u.userId = :id")
+    List<Task> findTasksByUserId(@Param("id") Long id);
 
-    @Query(value = "UPDATE User u SET u.tasks = null")
-    void deleteAllTasks();
+    @Query(value = "SELECT u.tasks FROM User u WHERE u.userName = :name")
+    List<Task> findTasksByUserName(@Param("name") String name);
 }
