@@ -40,23 +40,26 @@ public class UserController {
     public User updateUser(@PathVariable("id") Long id, @RequestBody User user) {
         return userService.updateUser(id, user);
     }
-    @GetMapping("/create/{id}")
-    public User createTasksForUser(@PathVariable("id") Long id, @RequestBody Task task) {
-        return userService.createTaskForUser(id, task);
+
+    @PostMapping("/create/{id}")
+    public List<Task> createTasksForUser(@PathVariable("id") Long id, @RequestBody Task task) {
+        return taskUserService.createTaskForUser(id, task);
     }
-    @GetMapping("/tasks/update/{id}")
-    public User updateTasksForUser(@PathVariable("id") Long id, @RequestBody Task task) {
-        return userService.updateTaskForUser(id, task);
+
+    @GetMapping("/tasks_by_user/{id}")
+    public List<Task> getTasksByUserId(@PathVariable("id") Long id) {
+        return taskUserService.getTasksOfUserByUserId(id);
     }
+
+    @PutMapping("/{user_id}/tasks/update/{task_id}")
+    public Task updateTasksForUser(@PathVariable("user_id") Long user_id, @PathVariable("task_id") Long task_id, @RequestBody Task task) {
+        return taskUserService.updateTaskForUser(user_id, task_id, task);
+    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable("id") Long id) {
         userService.deleteUser(id);
-    }
-
-    @GetMapping("/tasks/{id}")
-    public List<Task> getTasksByUserId(@PathVariable("id") Long id) {
-        return taskUserService.getTasksOfUserByUserId(id);
     }
 
     @GetMapping("/tasks/{name}")
@@ -69,8 +72,8 @@ public class UserController {
         return taskUserService.deleteAllTasksOfUserByUserId(id);
     }
 
-    @GetMapping("/shared/{id}")
-    public List<Task> sharedTasksToUser(@RequestParam(value = "sharedId", required = true) Long sharedId, @PathVariable("id") Long id) {
+    @PutMapping("/{sharedId}/shared/{id}")
+    public List<Task> sharedTasksToUser(@PathVariable(value = "sharedId", required = true) Long sharedId, @PathVariable("id") Long id) {
         return taskUserService.addSharedTasks(sharedId, id);
     }
 
