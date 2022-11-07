@@ -121,7 +121,7 @@ public class TaskUserServiceTest {
 
     @Test
     public void should_add_a_task_to_the_user_when_the_task_exist_in_the_tasks_table_and_belong_to_the_user() {
-        Task task = new Task("task1");
+        Task task = new Task(1L,"task1",false);
         List<Task> tasks = List.of(task);
         User savedUser = new User(1L, "zhizhi");
         Task savedTask = new Task(1L, "task1", false);
@@ -138,12 +138,14 @@ public class TaskUserServiceTest {
 
     @Test
     public void should_add_a_task_to_the_user_when_the_task_exist_in_the_tasks_table_and_not_belong_to_the_user() {
-        Task task = new Task("task1");
+        Task task = new Task(1L,"task1",false);
         List<Task> tasks = List.of(task);
         User savedUser = new User(1L, "zhizhi");
         Task savedTask = new Task(1L, "task1", false);
+
         Task returnedTask = new Task(1L, "task1", false, List.of(savedUser));
         User returnedUser = new User(1L, "zhizhi", List.of(savedTask));
+
         when(userRepository.findById(1L)).thenReturn(Optional.of(savedUser));
         when(taskRepository.findById(1L)).thenReturn(Optional.of(savedTask));
         when(userRepository.findByTaskId(1L)).thenReturn(new ArrayList<>());
