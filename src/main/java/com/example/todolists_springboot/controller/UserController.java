@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
@@ -36,13 +35,19 @@ public class UserController {
         return userService.getUserById(id).get();
     }
 
-    @GetMapping("/update/{id}")
+    @PutMapping("/update/{id}")
     public User updateUser(@PathVariable("id") Long id, @RequestBody User user) {
         return userService.updateUser(id, user);
     }
 
-    @PostMapping("/create/{id}")
-    public List<Task> createTasksForUser(@PathVariable("id") Long id, @RequestBody Task task) {
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUser(@PathVariable("id") Long id) {
+        userService.deleteUser(id);
+    }
+
+    @PostMapping("/create_task/{id}")
+    public Task createTasksForUser(@PathVariable("id") Long id, @RequestBody Task task) {
         return taskUserService.createTaskForUser(id, task);
     }
 
@@ -56,19 +61,13 @@ public class UserController {
         return taskUserService.updateTaskForUser(user_id, task_id, task);
     }
 
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUser(@PathVariable("id") Long id) {
-        userService.deleteUser(id);
-    }
-
     @GetMapping("/tasks/{name}")
     public List<Task> getTasksByUserName(@PathVariable("name") String name) {
         return taskUserService.getTasksOfUserByUserName(name);
     }
 
     @DeleteMapping("/tasks/{id}")
-    public Optional<User> deleteAllTasksOfUser(@PathVariable("id") Long id) {
+    public Object deleteAllTasksOfUser(@PathVariable("id") Long id) {
         return taskUserService.deleteAllTasksOfUserByUserId(id);
     }
 
