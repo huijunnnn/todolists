@@ -1,6 +1,5 @@
 package com.example.todolists_springboot.service;
 
-import com.example.todolists_springboot.domain.Task;
 import com.example.todolists_springboot.domain.User;
 import com.example.todolists_springboot.handler.exception.UserNotFoundException;
 import com.example.todolists_springboot.repository.UserRepository;
@@ -106,53 +105,4 @@ public class UserServiceTest {
         assertThrows(UserNotFoundException.class, () -> userService.deleteUser(1L));
         verify(userRepository).findById(1L);
     }
-
-    @Test
-    public void should_add_a_task_to_the_user_when_the_user_exist() {
-        User savedUser = new User(1L, "zhizhi");
-        Task task = new Task("task1");
-        List<Task> tasks = List.of(task);
-        User returnedUser = new User(1L, "zhizhi", tasks);
-        when(userRepository.findById(1L)).thenReturn(Optional.of(savedUser));
-        when(userRepository.save(returnedUser)).thenReturn(returnedUser);
-        User result = userService.createTaskForUser(1L, task);
-        assertEquals(returnedUser, result);
-        verify(userRepository).findById(1L);
-        verify(userRepository).save(returnedUser);
-    }
-
-    @Test
-    public void should_add_a_task_to_the_user_when_the_user_not_exist() {
-        Optional<User> userOptional = Optional.empty();
-        Task task = new Task("task1");
-        when(userRepository.findById(1L)).thenReturn(userOptional);
-        assertThrows(UserNotFoundException.class, () -> userService.createTaskForUser(1L, task));
-        verify(userRepository).findById(1L);
-    }
-
-    @Test
-    public void should_update_a_task_to_the_user_when_the_user_exist() {
-
-        Task task = new Task("task1");
-        List<Task> tasks = List.of(task);
-        User savedUser = new User(1L, "zhizhi", tasks);
-        Task newTask = new Task("task2");
-        User newUser = new User(1L, "zhizhi", List.of(newTask));
-        when(userRepository.findById(1L)).thenReturn(Optional.of(savedUser));
-        when(userRepository.save(newUser)).thenReturn(newUser);
-        User result = userService.updateTaskForUser(1L, newTask);
-        assertEquals(newUser, result);
-        verify(userRepository).findById(1L);
-        verify(userRepository).save(newUser);
-    }
-
-    @Test
-    public void should_update_a_task_to_the_user_when_the_user_not_exist() {
-        Optional<User> userOptional = Optional.empty();
-        Task task = new Task("task1");
-        when(userRepository.findById(1L)).thenReturn(userOptional);
-        assertThrows(UserNotFoundException.class, () -> userService.updateTaskForUser(1L, task));
-        verify(userRepository).findById(1L);
-    }
-
 }
