@@ -26,7 +26,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findByTaskCompleted(Boolean completed);
 
     @Query(value = "SELECT t FROM Task AS t WHERE t.taskName LIKE %:keyword%")
-    List<Task> findByTaskKeyword(@Param("keyword")String keyword);
+    List<Task> findByTaskKeyword(@Param("keyword") String keyword);
 
     @Query(value = "SELECT t FROM Task t WHERE t.taskId = (SELECT max(t.taskId) FROM Task t)")
     Task findLastTask();
