@@ -27,15 +27,16 @@ public class User implements Serializable {
 
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE
-    })
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            })
     @JoinTable(name = "user_tasks",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "task_id")
     )
     @JsonIgnore
-    private List<Task> tasks = new ArrayList<>();
+    private List<Task> tasks = new ArrayList<>(8);
+
 
     public User(String userName) {
         this.userName = userName;
@@ -48,6 +49,7 @@ public class User implements Serializable {
     public void addTask(Task task){
         this.tasks.add(task);
         task.getUsers().add(this);
+
     }
 
 }

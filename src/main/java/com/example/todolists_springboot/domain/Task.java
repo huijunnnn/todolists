@@ -31,7 +31,7 @@ public class Task implements Serializable {
             cascade = {
                     CascadeType.PERSIST,
                     CascadeType.MERGE
-            },mappedBy = "tasks")
+            }, mappedBy = "tasks")
     @JsonIgnore
     private List<User> users = new ArrayList<>();
 
