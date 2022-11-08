@@ -57,6 +57,7 @@ public class TaskUserService {
             userRepository.save(user);
             return findTask;
         }
+        task.setTaskCompleted(false);
         Task savedTask = taskRepository.save(task);
         user.addTask(savedTask);
         userRepository.save(user);
