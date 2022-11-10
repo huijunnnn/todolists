@@ -1,9 +1,7 @@
 package com.example.todolists_springboot.service;
 
-import com.example.todolists_springboot.domain.Task;
 import com.example.todolists_springboot.domain.User;
 import com.example.todolists_springboot.handler.exception.UserNotFoundException;
-import com.example.todolists_springboot.repository.TaskRepository;
 import com.example.todolists_springboot.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,11 +24,9 @@ public class UserService {
     private List<User> getAllUsers() {
         return userRepository.findAll();
     }
-
     public List<User> getUsers(String name) {
         return userRepository.findByUserName(name);
     }
-
     public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
     }
@@ -40,7 +36,6 @@ public class UserService {
         newUser.setUserId(oldUser.get().getUserId());
         return userRepository.save(newUser);
     }
-
     public void deleteUser(Long id) {
         Optional<User> user = userRepository.findById(id);
         if (user.isEmpty()) {
@@ -49,7 +44,5 @@ public class UserService {
             userRepository.deleteById(id);
         }
     }
-
-
 
 }
