@@ -16,6 +16,15 @@ public class TaskService {
     @Autowired
     TaskRepository taskRepository;
 
+    public Task getTaskByTaskId(Long id) {
+        return taskRepository.findById(id).get();
+    }
+
+    public List<Task> getTasksByKeyword(String keyword) {
+
+        return taskRepository.findByTaskKeyword(keyword);
+    }
+
     public Task addTask(Task task) {
         task.setTaskCompleted(false);
         return taskRepository.save(task);
@@ -53,12 +62,4 @@ public class TaskService {
         }
     }
 
-    public List<Task> getTasksByKeyword(String keyword) {
-
-        return taskRepository.findByTaskKeyword(keyword);
-    }
-
-    public Optional<Task> getTaskByTaskId(Long id) {
-        return taskRepository.findById(id);
-    }
 }
