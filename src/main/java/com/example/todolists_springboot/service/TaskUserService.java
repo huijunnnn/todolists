@@ -44,24 +44,11 @@ public class TaskUserService {
     }
 
     public Task createTaskForUser(Long id, Task task) {
-        Optional<User> oldUser = userRepository.findById(id);
-        User user = oldUser.orElseThrow(UserNotFoundException::new);
-        Long taskId = task.getTaskId();
-        if (taskId != null) {
-            Optional<Task> findTaskOptional = taskRepository.findById(taskId);
-            Task findTask = findTaskOptional.orElseThrow(TaskNotFoundException::new);
-            if (userRepository.findByTaskId(taskId).contains(user)) {
-                return findTask;
-            }
-            user.addTask(findTask);
-            userRepository.save(user);
-            return findTask;
-        }
+        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
         task.setTaskCompleted(false);
         Task savedTask = taskRepository.save(task);
         user.addTask(savedTask);
-        userRepository.save(user);
-        return taskRepository.findLastTask();
+        return savedTask;
     }
 
     public Object deleteAllTasksOfUserByUserId(Long id) {
