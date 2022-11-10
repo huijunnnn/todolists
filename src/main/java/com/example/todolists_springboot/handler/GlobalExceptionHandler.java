@@ -1,5 +1,6 @@
 package com.example.todolists_springboot.handler;
 
+import com.example.todolists_springboot.handler.exception.TaskNotExistInYourTasksException;
 import com.example.todolists_springboot.handler.exception.TaskNotFoundException;
 import com.example.todolists_springboot.handler.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,12 @@ public class GlobalExceptionHandler {
         return new ErrorResult(exception.getMessage());
     }
 
+    @ExceptionHandler(TaskNotExistInYourTasksException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public ErrorResult handle(TaskNotExistInYourTasksException exception) {
+        return new ErrorResult(exception.getMessage());
+    }
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
