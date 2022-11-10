@@ -35,7 +35,7 @@ public class User implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "task_id")
     )
     @JsonIgnore
-    private List<Task> tasks = new ArrayList<>(8);
+    private List<Task> tasks = new ArrayList<>();
 
 
     public User(String userName) {
