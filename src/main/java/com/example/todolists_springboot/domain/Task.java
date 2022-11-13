@@ -35,6 +35,8 @@ public class Task implements Serializable {
     @JsonIgnore
     private List<User> users = new ArrayList<>();
 
+    // review：
+    //  1. 如果构造函数比较多，那么建议使用静态构造方法进行创建对象，这样的好处就是可以通过方法签名来表明更加明确的函数内容，构造函数不能自定义名称并且 Java 语言基本类型又是否分隔不开
     public Task(Long taskId, String taskName, Boolean taskCompleted) {
         this.taskId = taskId;
         this.taskName = taskName;

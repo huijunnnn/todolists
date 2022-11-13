@@ -11,8 +11,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+// review:
+//  1. API 的设计建议参考 RESTful ，一般都是在类级别使用资源名称
 @RequestMapping("/api")
 public class TaskController {
+    // review: 
+    //  1. 不建议使用该注解进行依赖注入，一般使用构造参数进行注入
+    //  2. 可见性修饰符确实，默认是包级别的可见性，因此可能被同一个包的其他类使用，一般建议使用最小的可见性
     @Autowired
     TaskService taskService;
     @Autowired
@@ -45,10 +50,14 @@ public class TaskController {
         taskService.deleteTask(id);
     }
 
+    // review：
+    //  1. 一般搜索 API 建议使用 GET 参数来传递参数，可以参考一下 Github 的 API 设计
     @GetMapping("/tasks/keyword-text/{keyword}")
     public List<Task> getTasksByKeyword(@PathVariable("keyword") String keyword) {
         return taskService.getTasksByKeyword(keyword);
     }
+    // review：
+    //  1. 代码风格不对，这里原来缺少空格
     @GetMapping("/tasks/{name}/users")
     public List<User> getAllUsersOfTaskByTaskName(@PathVariable("name") String name) {
         return assignmentService.getUsersOfTaskByTaskName(name);

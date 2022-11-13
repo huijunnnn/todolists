@@ -36,6 +36,11 @@ public class GlobalExceptionHandler {
     public ErrorResult handle(TaskNotExistInYourTasksException exception) {
         return new ErrorResult(exception.getMessage());
     }
+    // review：
+    //  1. 上边所有的函数可以合并为一个函数，需要重新设计异常的层次，可以尝试一下，看看如何做会更好
+    //  2. 这主要的问题是每当增加一个异常都需要在这里增加一个对应的异常的处理函数
+
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
