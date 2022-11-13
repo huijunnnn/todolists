@@ -2,9 +2,10 @@ package com.example.todolists_springboot.contrller;
 
 import com.example.todolists_springboot.controller.TaskController;
 import com.example.todolists_springboot.domain.Task;
+import com.example.todolists_springboot.domain.User;
 import com.example.todolists_springboot.handler.exception.TaskNotFoundException;
 import com.example.todolists_springboot.service.TaskService;
-import com.example.todolists_springboot.service.TaskUserService;
+import com.example.todolists_springboot.service.AssignmentService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
@@ -34,16 +35,20 @@ public class TaskControllerTest {
     @MockBean
     private TaskService taskService;
     @MockBean
-    private TaskUserService taskUserService;
+    private AssignmentService assignmentService;
     @Autowired
     private JacksonTester<Task> taskJson;
     @Autowired
     private JacksonTester<List<Task>> taskListJson;
+    @Autowired
+    private JacksonTester<User> userJson;
+    @Autowired
+    private JacksonTester<List<User>> userListJson;
 
     @Test
     void should_add_a_task_and_return_the_task() throws Exception {
         Task requestBody = new Task("test");
-        MockHttpServletRequestBuilder requestBuilder = post("/tasks")
+        MockHttpServletRequestBuilder requestBuilder = post("/api/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(taskJson.write(requestBody).getJson());
         MockHttpServletResponse response = mockMvc.perform(requestBuilder)
@@ -54,10 +59,10 @@ public class TaskControllerTest {
     }
 
     @Test
-    void should_get_all_the_tasks_when_there_is_no_parameters() throws Exception {
+    void should_get_all_the_tasks() throws Exception {
         Task test = new Task(1L, "test", false);
         when(taskService.getTasks(null)).thenReturn(List.of(test));
-        MockHttpServletResponse response = mockMvc.perform(get("/tasks"))
+        MockHttpServletResponse response = mockMvc.perform(get("/api/tasks"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andReturn()
@@ -68,66 +73,82 @@ public class TaskControllerTest {
     }
 
     @Test
-    void should_get_all_the_tasks_when_the_parameter_is_assigned_to_true() throws Exception {
-        Task task = new Task(2L, "test", true);
-        when(taskService.getTasks(true)).thenReturn(List.of(task));
-        MockHttpServletResponse response = mockMvc.perform(get("/tasks?completed=true"))
+    void should_get_the_task_by_the_task_id_when_the_task_exists() throws Exception {
+        Task test = new Task(1L, "test", false);
+        when(taskService.getTaskByTaskId(1L)).thenReturn(test);
+        MockHttpServletResponse response = mockMvc.perform(get("/api/tasks/{id}",1L))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andReturn()
                 .getResponse();
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo(taskListJson.write(List.of(task)).getJson());
-        verify(taskService).getTasks(true);
+        assertThat(response.getContentAsString()).isEqualTo(taskJson.write(test).getJson());
+        verify(taskService).getTaskByTaskId(1L);
     }
-
     @Test
-    void should_get_all_the_tasks_when_the_parameter_is_assigned_to_false() throws Exception {
-        Task task = new Task(1L, "test", false);
-        when(taskService.getTasks(false)).thenReturn(List.of(task));
-        MockHttpServletResponse response = mockMvc.perform(get("/tasks?completed=false"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andReturn()
-                .getResponse();
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo(taskListJson.write(List.of(task)).getJson());
-        verify(taskService).getTasks(false);
-    }
+    void should_get_the_task_by_the_task_id_when_the_task_not_exist() {
+        Task test = new Task(1L, "test", false);
+        doThrow(new TaskNotFoundException()).when(taskService).getTaskByTaskId(1L);
 
+        MockHttpServletResponse response = null;
+        try {
+            response = mockMvc.perform(get("/api/tasks/{id}", 1L))
+                    .andExpect(status().isNotFound())
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                    .andReturn()
+                    .getResponse();
+        } catch (Exception e) {
+            if (e instanceof TaskNotFoundException) {
+                assertThat(e.getMessage()).isEqualTo("Task not found");
+            }
+        }
+
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        verify(taskService).getTaskByTaskId(1L);
+    }
     @Test
     void should_update_the_task_by_id_when_the_task_exists() throws Exception {
         Task requestBody = new Task(null, "test test", true);
         Task newTask = new Task(1L, "test test", true);
         when(taskService.updateTask(1L, requestBody)).thenReturn(newTask);
-        MockHttpServletRequestBuilder requestBuilder = put("/tasks/{id}", 1L)
+
+        MockHttpServletRequestBuilder requestBuilder = put("/api/tasks/{id}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(taskJson.write(requestBody).getJson());
         MockHttpServletResponse response = mockMvc.perform(requestBuilder)
                 .andReturn()
                 .getResponse();
+
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.getContentAsString()).isEqualTo(taskJson.write(newTask).getJson());
         verify(taskService).updateTask(1L, requestBody);
     }
 
     @Test
-    void should_update_the_task_by_id_when_the_task_does_not_exist() throws Exception {
+    void should_update_the_task_by_id_when_the_task_not_exist() {
         Task requestBody = new Task("test test", true);
         when(taskService.updateTask(1L, requestBody)).thenThrow(new TaskNotFoundException());
-        MockHttpServletRequestBuilder requestBuilder = put("/tasks/{id}", 1L)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(taskJson.write(requestBody).getJson());
-        MockHttpServletResponse response = mockMvc.perform(requestBuilder)
-                .andReturn()
-                .getResponse();
+        MockHttpServletResponse response = null;
+        try {
+            MockHttpServletRequestBuilder requestBuilder = put("/api/tasks/{id}", 1L)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(taskJson.write(requestBody).getJson());
+            response = mockMvc.perform(requestBuilder)
+                    .andReturn()
+                    .getResponse();
+        } catch (Exception e) {
+            if (e instanceof TaskNotFoundException) {
+                assertThat(e.getMessage()).isEqualTo("Task not found");
+            }
+        }
+
         assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
         verify(taskService).updateTask(1L, requestBody);
     }
 
     @Test
     void should_delete_the_task_when_the_task_exits() throws Exception {
-        MockHttpServletRequestBuilder requestBuilder = delete("/tasks/{id}", 1L);
+        MockHttpServletRequestBuilder requestBuilder = delete("/api/tasks/{id}", 1L);
         MockHttpServletResponse response = mockMvc.perform(requestBuilder)
                 .andReturn()
                 .getResponse();
@@ -135,12 +156,21 @@ public class TaskControllerTest {
     }
 
     @Test
-    void should_delete_the_task_when_the_task_does_not_exit() throws Exception {
+    void should_delete_the_task_when_the_task_does_not_exit() {
         doThrow(new TaskNotFoundException()).when(taskService).deleteTask(1L);
-        MockHttpServletRequestBuilder requestBuilder = delete("/tasks/{id}", 1L);
-        MockHttpServletResponse response = mockMvc.perform(requestBuilder)
-                .andReturn()
-                .getResponse();
+
+        MockHttpServletResponse response = null;
+        try {
+            MockHttpServletRequestBuilder requestBuilder = delete("/api/tasks/{id}", 1L);
+            response = mockMvc.perform(requestBuilder)
+                    .andReturn()
+                    .getResponse();
+        } catch (Exception e) {
+            if (e instanceof TaskNotFoundException) {
+                assertThat(e.getMessage()).isEqualTo("Task not found");
+            }
+        }
+
         assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
@@ -148,7 +178,8 @@ public class TaskControllerTest {
     void should_select_tasks_by_keyword_and_return_the_task() throws Exception {
         Task task = new Task(1L, "test", true);
         when(taskService.getTasksByKeyword("te")).thenReturn(List.of(task));
-        MockHttpServletResponse response = mockMvc.perform(get("/tasks/{keyword}", "te"))
+
+        MockHttpServletResponse response = mockMvc.perform(get("/api/tasks/keyword-text/{keyword}", "te"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andReturn()
@@ -159,4 +190,19 @@ public class TaskControllerTest {
         verify(taskService).getTasksByKeyword("te");
     }
 
+    @Test
+    void should_get_all_users_of_the_task_by_task_name() throws Exception {
+        List<User> theReturnedUsers = List.of(new User(1L, "test"), new User(2L, "test2"));
+        when(assignmentService.getUsersOfTaskByTaskName("test")).thenReturn(theReturnedUsers);
+
+        MockHttpServletResponse response = mockMvc.perform(get("/api/tasks/{name}/users", "test"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn()
+                .getResponse();
+
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.getContentAsString()).isEqualTo(userListJson.write(theReturnedUsers).getJson());
+        verify(assignmentService).getUsersOfTaskByTaskName("test");
+    }
 }

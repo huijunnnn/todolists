@@ -15,6 +15,8 @@ import java.util.List;
 public class TaskController {
     @Autowired
     TaskService taskService;
+    @Autowired
+    AssignmentService assignmentService;
 
     @PostMapping("/tasks")
     @ResponseStatus(HttpStatus.CREATED)
@@ -47,5 +49,8 @@ public class TaskController {
     public List<Task> getTasksByKeyword(@PathVariable("keyword") String keyword) {
         return taskService.getTasksByKeyword(keyword);
     }
-
+    @GetMapping("/tasks/{name}/users")
+    public List<User> getAllUsersOfTaskByTaskName(@PathVariable("name") String name) {
+        return assignmentService.getUsersOfTaskByTaskName(name);
+    }
 }

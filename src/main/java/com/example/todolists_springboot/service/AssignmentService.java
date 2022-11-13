@@ -72,6 +72,7 @@ public class AssignmentService {
             newTask.setTaskId(oldTask.getTaskId());
             taskRepository.save(newTask);
             user.addTask(newTask);
+            userRepository.save(user);
             return newTask;
         }else{
             throw new TaskNotExistInYourTasksException();

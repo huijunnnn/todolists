@@ -15,6 +15,8 @@ import java.util.List;
 public class UserController {
     @Autowired
     UserService userService;
+    @Autowired
+    AssignmentService assignmentService;
 
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
@@ -23,13 +25,13 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public List<User> getUsers() {
-        return userService.getUsers();
+    public List<User> getAllUsers() {
+        return userService.getAllUsers();
     }
 
     @GetMapping("/users/{id}")
     public User getUserByUserId(@PathVariable("id") Long id) {
-        return userService.getUserById(id).get();
+        return userService.getUserById(id);
     }
 
     @PutMapping("/users/{id}")
@@ -43,5 +45,29 @@ public class UserController {
         userService.deleteUser(id);
     }
 
+    @PostMapping("/users/{id}/tasks")
+    public Task createTaskForUser(@PathVariable("id") Long id, @RequestBody Task task) {
+        return assignmentService.createTaskForUser(id, task);
+    }
+
+    @GetMapping("/users/{id}/tasks")
+    public List<Task> getTasksByUserId(@PathVariable("id") Long id) {
+        return assignmentService.getTasksOfUserByUserId(id);
+    }
+
+    @DeleteMapping("/users/{id}/tasks")
+    public Object deleteAllTasksOfUser(@PathVariable("id") Long id) {
+        return assignmentService.deleteAllTasksOfUserByUserId(id);
+    }
+
+    @PutMapping("/users/{user_id}/tasks/{task_id}")
+    public Task updateTasksForUser(@PathVariable("user_id") Long user_id, @PathVariable("task_id") Long task_id, @RequestBody Task task) {
+        return assignmentService.updateTaskForUser(user_id, task_id, task);
+    }
+
+    @PostMapping("/users/{id}/tasks/addition/{sharedTaskId}")
+    public Task sharedTaskToUser(@PathVariable(value = "sharedTaskId") Long sharedTaskId, @PathVariable("id") Long id) {
+        return assignmentService.addSharedTask(sharedTaskId, id);
+    }
 
 }

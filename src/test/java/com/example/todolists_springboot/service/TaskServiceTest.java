@@ -30,7 +30,6 @@ public class TaskServiceTest {
     @InjectMocks
     private TaskService taskService;
 
-
     @Test
     public void should_add_a_task_and_return_the_task() {
         Task newTask = new Task("task1");
@@ -106,19 +105,6 @@ public class TaskServiceTest {
         when(taskRepository.findById(1L)).thenReturn(taskOptional);
         assertThrows(TaskNotFoundException.class, () -> taskService.deleteTask(1L));
         verify(taskRepository).findById(1L);
-    }
-
-    @Test
-    public void should_add_an_user_to_the_task_and_return_the_task() {
-        User user = new User("zhizhi");
-        List<User> users = List.of(user);
-        Task newTask = new Task("task1");
-        newTask.setUsers(users);
-        Task returnedTask = new Task(1L, "task1", false, users);
-        when(taskRepository.save(newTask)).thenReturn(returnedTask);
-        Task result = taskService.addTask(newTask);
-        assertEquals(returnedTask, result);
-        verify(taskRepository).save(newTask);
     }
 
     @Test

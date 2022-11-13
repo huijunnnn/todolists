@@ -42,27 +42,17 @@ public class UserServiceTest {
         List<User> returnedUsers = List.of(new User(1L, "Test1"),
                 new User(2L, "Test2"));
         when(userRepository.findAll()).thenReturn(returnedUsers);
-        List<User> result = userService.getUsers();
+        List<User> result = userService.getAllUsers();
         assertEquals(result, returnedUsers);
         verify(userRepository).findAll();
-    }
-
-    @Test
-    public void should_get_all_the_users_when_there_exist_parameter() {
-        List<User> returnedUsers = List.of(new User(1L, "小张"),
-                new User(2L, "小张"));
-        when(userRepository.findByUserName("小张")).thenReturn(returnedUsers);
-        List<User> result = userService.getUsers("小张");
-        assertEquals(result, returnedUsers);
-        verify(userRepository).findByUserName("小张");
     }
 
     @Test
     public void should_get_the_user_by_user_id() {
         User user = new User(1L, "小张");
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        Optional<User> result = userService.getUserById(1L);
-        assertEquals(Optional.of(user), result);
+        User result = userService.getUserById(1L);
+        assertEquals(user, result);
         verify(userRepository).findById(1L);
     }
 

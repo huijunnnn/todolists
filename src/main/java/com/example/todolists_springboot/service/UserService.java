@@ -18,22 +18,17 @@ public class UserService {
     public User addUser(User user) {
         return userRepository.save(user);
     }
-    public List<User> getUsers() {
-        return getAllUsers();
-    }
-    private List<User> getAllUsers() {
+
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
-    public List<User> getUsers(String name) {
-        return userRepository.findByUserName(name);
-    }
-    public Optional<User> getUserById(Long id) {
-        return userRepository.findById(id);
+    public User getUserById(Long id) {
+        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        return user;
     }
     public User updateUser(Long id, User newUser) {
-        Optional<User> oldUser = userRepository.findById(id);
-        User user = oldUser.orElseThrow(UserNotFoundException::new);
-        newUser.setUserId(oldUser.get().getUserId());
+        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        newUser.setUserId(user.getUserId());
         return userRepository.save(newUser);
     }
     public void deleteUser(Long id) {

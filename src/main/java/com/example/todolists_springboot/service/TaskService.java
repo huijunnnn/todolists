@@ -16,18 +16,19 @@ public class TaskService {
     @Autowired
     TaskRepository taskRepository;
 
+    public Task addTask(Task task) {
+        task.setTaskCompleted(false);
+        return taskRepository.save(task);
+    }
+
     public Task getTaskByTaskId(Long id) {
-        return taskRepository.findById(id).get();
+        Task task = taskRepository.findById(id).orElseThrow(TaskNotFoundException::new);
+        return task;
     }
 
     public List<Task> getTasksByKeyword(String keyword) {
 
         return taskRepository.findByTaskKeyword(keyword);
-    }
-
-    public Task addTask(Task task) {
-        task.setTaskCompleted(false);
-        return taskRepository.save(task);
     }
 
     public List<Task> getTasks(Boolean completed) {
