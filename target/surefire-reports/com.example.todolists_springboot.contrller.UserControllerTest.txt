@@ -1,0 +1,25 @@
+-------------------------------------------------------------------------------
+Test set: com.example.todolists_springboot.contrller.UserControllerTest
+-------------------------------------------------------------------------------
+Tests run: 20, Failures: 3, Errors: 0, Skipped: 0, Time elapsed: 1.273 s <<< FAILURE! - in com.example.todolists_springboot.contrller.UserControllerTest
+should_update_the_user_by_id_when_the_user_exists  Time elapsed: 0.025 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 200
+ but was: 404
+	at com.example.todolists_springboot.contrller.UserControllerTest.should_update_the_user_by_id_when_the_user_exists(UserControllerTest.java:131)
+
+should_shared_the_task_to_the_user_when_the_task_not_exist  Time elapsed: 0.005 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 404
+ but was: 200
+	at com.example.todolists_springboot.contrller.UserControllerTest.should_shared_the_task_to_the_user_when_the_task_not_exist(UserControllerTest.java:397)
+
+should_shared_the_task_to_the_user_when_the_user_not_exist  Time elapsed: 0.004 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 404
+ but was: 200
+	at com.example.todolists_springboot.contrller.UserControllerTest.should_shared_the_task_to_the_user_when_the_user_not_exist(UserControllerTest.java:380)
+
