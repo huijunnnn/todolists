@@ -1,3 +1,9 @@
 steps:
-  - label: ":docker: API service Build"
+  - label: ":docker run app"
+    key: app
+    depends_on: mysql:latest
     command: docker-compose run app
+  - label: ":docker: run mysql"
+    key: mysql:latest
+    command:
+      - docker-compose run mysql:latest
