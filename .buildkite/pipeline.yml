@@ -1,3 +1,4 @@
 steps:
-  - label: ":docker: API service Build"
-    command: docker-compose run app
+  - label: ":docker run app"
+    command: docker compose up
+
