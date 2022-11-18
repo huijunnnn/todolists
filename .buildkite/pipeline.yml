@@ -1,4 +1,3 @@
 steps:
   - label: ":docker run app"
     command: docker compose up
-
