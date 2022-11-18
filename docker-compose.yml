@@ -4,10 +4,7 @@ services:
     build: .
     restart: always
     ports:
-      - 8081:8081
-    volumes:
-      - /etc/machine-id:/etc/machine-id
-      - /var/lib/dbus/machine-id:/var/lib/dbus/machine-id
+      - 8080:8080
     depends_on:
       - mysqldb
   mysqldb:
@@ -15,8 +12,8 @@ services:
     environment:
       - MYSQL_DATABASE=springdata_jpa
       - MYSQL_USER=test
-      - MYSQL_PASSWORD=12345678
-      - MYSQL_ROOT_PASSWORD=12345678
+      - MYSQL_PASSWORD=supersecret
+      - MYSQL_ROOT_PASSWORD=supersecret
     restart: always
     ports:
       - 3306:3306
