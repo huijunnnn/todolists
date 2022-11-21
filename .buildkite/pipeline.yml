@@ -1,3 +1,13 @@
 steps:
+  - label: "build"
+    command: mvn clean package
   - label: ":docker run app"
-    command: docker compose up
+    key: app
+    depends_on: mysql:latest
+    command: docker-compose run app
+  - label: ":docker: run mysql"
+    key: mysql:latest
+    command:
+      - docker-compose run mysqldb
+  - label: "run test"
+    command: mvn test
