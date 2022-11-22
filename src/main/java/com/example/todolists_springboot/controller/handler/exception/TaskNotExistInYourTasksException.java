@@ -1,4 +1,4 @@
-package com.example.todolists_springboot.handler.exception;
+package com.example.todolists_springboot.controller.handler.exception;
 
 public class TaskNotExistInYourTasksException extends RuntimeException{
     public TaskNotExistInYourTasksException() {

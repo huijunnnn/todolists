@@ -1,8 +1,7 @@
 package com.example.todolists_springboot.service;
 
+import com.example.todolists_springboot.controller.handler.exception.TaskNotFoundException;
 import com.example.todolists_springboot.domain.Task;
-import com.example.todolists_springboot.domain.User;
-import com.example.todolists_springboot.handler.exception.TaskNotFoundException;
 import com.example.todolists_springboot.repository.TaskRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,7 +44,7 @@ public class TaskServiceTest {
         List<Task> returnedTasks = List.of(new Task(1L, "Test", false),
                 new Task(2L, "Test", true));
         when(taskRepository.findAll()).thenReturn(returnedTasks);
-        List<Task> result = taskService.getTasks(null);
+        List<Task> result = taskService.getTasks(null,null);
         assertEquals(result, returnedTasks);
         verify(taskRepository).findAll();
     }
@@ -54,7 +53,7 @@ public class TaskServiceTest {
     public void should_get_all_the_tasks_when_the_parameter_is_assigned_to_true() {
         List<Task> returnedTasks = List.of(new Task(1L, "Test", true));
         when(taskRepository.findByTaskCompleted(true)).thenReturn(returnedTasks);
-        List<Task> result = taskService.getTasks(true);
+        List<Task> result = taskService.getTasks(true,null);
         assertEquals(result, returnedTasks);
         verify(taskRepository).findByTaskCompleted(true);
     }
@@ -63,7 +62,7 @@ public class TaskServiceTest {
     public void should_get_all_the_tasks_when_the_parameter_is_assigned_to_false() {
         List<Task> returnedTasks = List.of(new Task(1L, "Test", false));
         when(taskRepository.findByTaskCompleted(false)).thenReturn(returnedTasks);
-        List<Task> result = taskService.getTasks(false);
+        List<Task> result = taskService.getTasks(false,null);
         assertEquals(result, returnedTasks);
         verify(taskRepository).findByTaskCompleted(false);
     }
@@ -112,7 +111,7 @@ public class TaskServiceTest {
         Task taskOne = new Task(1L, "task1", false);
         Task taskTwo = new Task(2L, "task2", false);
         when(taskRepository.findByTaskKeyword("task")).thenReturn(List.of(taskOne, taskTwo));
-        List<Task> result = taskService.getTasksByKeyword("task");
+        List<Task> result = taskService.getTasks(null,"task");
         assertEquals(List.of(taskOne, taskTwo), result);
         verify(taskRepository).findByTaskKeyword("task");
     }

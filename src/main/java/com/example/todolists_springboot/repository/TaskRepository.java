@@ -28,4 +28,6 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     @Query(value = "SELECT t FROM Task AS t WHERE t.taskName LIKE %:keyword%")
     List<Task> findByTaskKeyword(@Param("keyword") String keyword);
 
+    @Query(value = "SELECT t FROM Task t WHERE t.taskName LIKE %:keyword% AND t.taskCompleted=:completed")
+    List<Task> findByTaskCompletedAndKeyword(Boolean completed, String keyword);
 }

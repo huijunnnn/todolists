@@ -2,12 +2,12 @@ package com.example.todolists_springboot.service;
 
 import com.example.todolists_springboot.domain.Task;
 import com.example.todolists_springboot.domain.User;
-import com.example.todolists_springboot.handler.exception.TaskNotExistInYourTasksException;
-import com.example.todolists_springboot.handler.exception.TaskNotFoundException;
-import com.example.todolists_springboot.handler.exception.UserNotFoundException;
+import com.example.todolists_springboot.controller.handler.exception.TaskNotExistInYourTasksException;
+import com.example.todolists_springboot.controller.handler.exception.TaskNotFoundException;
+import com.example.todolists_springboot.controller.handler.exception.UserNotFoundException;
 import com.example.todolists_springboot.repository.TaskRepository;
 import com.example.todolists_springboot.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,11 +15,12 @@ import java.util.List;
 import static java.util.stream.Stream.of;
 
 @Service
+@RequiredArgsConstructor
 public class AssignmentService {
-    @Autowired
-    TaskRepository taskRepository;
-    @Autowired
-    UserRepository userRepository;
+
+   private final TaskRepository taskRepository;
+
+    private final UserRepository userRepository;
 
     public List<User> getUsersOfTaskByTaskName(String name) {
         return userRepository.findByTaskName(name);

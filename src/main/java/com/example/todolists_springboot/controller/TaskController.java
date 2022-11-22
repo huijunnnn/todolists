@@ -2,54 +2,50 @@ package com.example.todolists_springboot.controller;
 
 import com.example.todolists_springboot.domain.Task;
 import com.example.todolists_springboot.domain.User;
-import com.example.todolists_springboot.service.TaskService;
 import com.example.todolists_springboot.service.AssignmentService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.todolists_springboot.service.TaskService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequiredArgsConstructor
+@RequestMapping("/tasks")
 public class TaskController {
-    @Autowired
-    TaskService taskService;
-    @Autowired
-    AssignmentService assignmentService;
+    private final TaskService taskService;
+    private final AssignmentService assignmentService;
 
-    @PostMapping("/tasks")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Task addTask(@RequestBody Task task) {
         return taskService.addTask(task);
     }
 
-    @GetMapping("/tasks")
-    public List<Task> getTasks(@RequestParam(value = "completed", required = false) Boolean completed) {
-        return taskService.getTasks(completed);
+    @GetMapping
+    public List<Task> getTasks(@RequestParam(value = "completed", required = false) Boolean completed,
+                               @RequestParam(value = "keyword", required = false) String keyword) {
+        return taskService.getTasks(completed, keyword);
     }
 
-    @PutMapping("/tasks/{id}")
+    @PutMapping("/{id}")
     public Task updateTask(@PathVariable("id") Long id, @RequestBody Task task) {
         return taskService.updateTask(id, task);
     }
 
-    @GetMapping("/tasks/{id}")
+    @GetMapping("/{id}")
     public Task getTaskByTaskId(@PathVariable("id") Long id) {
         return taskService.getTaskByTaskId(id);
     }
 
-    @DeleteMapping("/tasks/{id}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteTask(@PathVariable("id") Long id) {
         taskService.deleteTask(id);
     }
 
-    @GetMapping("/tasks/keyword-text/{keyword}")
-    public List<Task> getTasksByKeyword(@PathVariable("keyword") String keyword) {
-        return taskService.getTasksByKeyword(keyword);
-    }
-    @GetMapping("/tasks/{name}/users")
+    @GetMapping("/{name}/users")
     public List<User> getAllUsersOfTaskByTaskName(@PathVariable("name") String name) {
         return assignmentService.getUsersOfTaskByTaskName(name);
     }

@@ -1,4 +1,4 @@
-package com.example.todolists_springboot.handler;
+package com.example.todolists_springboot.controller.handler;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

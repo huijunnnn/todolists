@@ -1,9 +1,9 @@
 package com.example.todolists_springboot.service;
 
 import com.example.todolists_springboot.domain.Task;
-import com.example.todolists_springboot.handler.exception.TaskNotFoundException;
+import com.example.todolists_springboot.controller.handler.exception.TaskNotFoundException;
 import com.example.todolists_springboot.repository.TaskRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,10 +11,9 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class TaskService {
-
-    @Autowired
-    TaskRepository taskRepository;
+    private final TaskRepository taskRepository;
 
     public Task addTask(Task task) {
         task.setTaskCompleted(false);
@@ -26,17 +25,26 @@ public class TaskService {
         return task;
     }
 
-    public List<Task> getTasksByKeyword(String keyword) {
-
-        return taskRepository.findByTaskKeyword(keyword);
-    }
-
-    public List<Task> getTasks(Boolean completed) {
-        if (!Objects.isNull(completed)) {
-            return getTasksByStatus(completed);
-        } else {
+    public List<Task> getTasks(Boolean completed, String keyword) {
+        if(Objects.isNull(completed)&&Objects.isNull(keyword)){
             return getAllTasks();
         }
+        if(!Objects.isNull(completed)&&Objects.isNull(keyword)){
+            return getTasksByStatus(completed);
+        }
+        if(Objects.isNull(completed)&&!Objects.isNull(keyword)){
+            return getTasksByKeyword(keyword);
+        }
+        return getTasksByStatusAndKeyword(completed,keyword);
+    }
+
+    private List<Task> getTasksByStatusAndKeyword(Boolean completed, String keyword) {
+        return taskRepository.findByTaskCompletedAndKeyword(completed,keyword);
+    }
+
+    private List<Task> getTasksByKeyword(String keyword) {
+
+        return taskRepository.findByTaskKeyword(keyword);
     }
 
     private List<Task> getAllTasks() {

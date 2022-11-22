@@ -1,7 +1,7 @@
 package com.example.todolists_springboot.service;
 
 import com.example.todolists_springboot.domain.User;
-import com.example.todolists_springboot.handler.exception.UserNotFoundException;
+import com.example.todolists_springboot.controller.handler.exception.UserNotFoundException;
 import com.example.todolists_springboot.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

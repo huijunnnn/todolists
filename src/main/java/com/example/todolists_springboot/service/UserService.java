@@ -1,19 +1,19 @@
 package com.example.todolists_springboot.service;
 
 import com.example.todolists_springboot.domain.User;
-import com.example.todolists_springboot.handler.exception.UserNotFoundException;
+import com.example.todolists_springboot.controller.handler.exception.UserNotFoundException;
 import com.example.todolists_springboot.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public User addUser(User user) {
         return userRepository.save(user);

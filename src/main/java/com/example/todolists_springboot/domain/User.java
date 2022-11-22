@@ -24,7 +24,6 @@ public class User implements Serializable {
     @Column(name = "user_name")
     private String userName;
 
-
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {
                     CascadeType.PERSIST,
@@ -36,7 +35,6 @@ public class User implements Serializable {
     )
     @JsonIgnore
     private List<Task> tasks = new ArrayList<>();
-
 
     public User(String userName) {
         this.userName = userName;

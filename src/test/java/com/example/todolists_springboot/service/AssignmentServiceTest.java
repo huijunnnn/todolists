@@ -2,9 +2,9 @@ package com.example.todolists_springboot.service;
 
 import com.example.todolists_springboot.domain.Task;
 import com.example.todolists_springboot.domain.User;
-import com.example.todolists_springboot.handler.exception.TaskNotExistInYourTasksException;
-import com.example.todolists_springboot.handler.exception.TaskNotFoundException;
-import com.example.todolists_springboot.handler.exception.UserNotFoundException;
+import com.example.todolists_springboot.controller.handler.exception.TaskNotExistInYourTasksException;
+import com.example.todolists_springboot.controller.handler.exception.TaskNotFoundException;
+import com.example.todolists_springboot.controller.handler.exception.UserNotFoundException;
 import com.example.todolists_springboot.repository.TaskRepository;
 import com.example.todolists_springboot.repository.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,6 @@ public class AssignmentServiceTest {
     private TaskRepository taskRepository;
     @InjectMocks
     private AssignmentService assignmentService;
-
 
     @Test
     public void get_all_tasks_by_user_id_and_return_the_tasks(){

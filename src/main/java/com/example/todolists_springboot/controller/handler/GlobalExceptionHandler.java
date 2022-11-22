@@ -1,8 +1,8 @@
-package com.example.todolists_springboot.handler;
+package com.example.todolists_springboot.controller.handler;
 
-import com.example.todolists_springboot.handler.exception.TaskNotExistInYourTasksException;
-import com.example.todolists_springboot.handler.exception.TaskNotFoundException;
-import com.example.todolists_springboot.handler.exception.UserNotFoundException;
+import com.example.todolists_springboot.controller.handler.exception.TaskNotExistInYourTasksException;
+import com.example.todolists_springboot.controller.handler.exception.TaskNotFoundException;
+import com.example.todolists_springboot.controller.handler.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;

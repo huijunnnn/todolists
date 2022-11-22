@@ -4,9 +4,9 @@ package com.example.todolists_springboot.contrller;
 import com.example.todolists_springboot.controller.UserController;
 import com.example.todolists_springboot.domain.Task;
 import com.example.todolists_springboot.domain.User;
-import com.example.todolists_springboot.handler.exception.TaskNotExistInYourTasksException;
-import com.example.todolists_springboot.handler.exception.TaskNotFoundException;
-import com.example.todolists_springboot.handler.exception.UserNotFoundException;
+import com.example.todolists_springboot.controller.handler.exception.TaskNotExistInYourTasksException;
+import com.example.todolists_springboot.controller.handler.exception.TaskNotFoundException;
+import com.example.todolists_springboot.controller.handler.exception.UserNotFoundException;
 import com.example.todolists_springboot.service.AssignmentService;
 import com.example.todolists_springboot.service.TaskService;
 import com.example.todolists_springboot.service.UserService;
@@ -25,8 +25,13 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.doThrow;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -54,7 +59,7 @@ public class UserControllerTest {
     void should_add_an_user_and_return_the_user() throws Exception {
         User requestBody = new User("test");
 
-        MockHttpServletRequestBuilder requestBuilder = post("/api/users")
+        MockHttpServletRequestBuilder requestBuilder = post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(userJson.write(requestBody).getJson());
         MockHttpServletResponse response = mockMvc.perform(requestBuilder)
@@ -70,7 +75,7 @@ public class UserControllerTest {
         User test = new User(1L, "test");
         when(userService.getAllUsers()).thenReturn(List.of(test));
 
-        MockHttpServletResponse response = mockMvc.perform(get("/api/users"))
+        MockHttpServletResponse response = mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andReturn()
@@ -85,7 +90,7 @@ public class UserControllerTest {
     void should_get_the_user_by_id_when_the_user_exists() throws Exception {
         User test = new User(1L, "test");
         when(userService.getUserById(1L)).thenReturn(test);
-        MockHttpServletResponse response = mockMvc.perform(get("/api/users/{id}", 1L))
+        MockHttpServletResponse response = mockMvc.perform(get("/users/{id}", 1L))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andReturn()
@@ -101,7 +106,7 @@ public class UserControllerTest {
 
         MockHttpServletResponse response = null;
         try {
-            response = mockMvc.perform(get("/api/users/{id}", 1L))
+            response = mockMvc.perform(get("/users/{id}", 1L))
                     .andExpect(status().isNotFound())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                     .andReturn()
@@ -121,7 +126,7 @@ public class UserControllerTest {
         User newUser = new User(1L, "test test");
         when(userService.updateUser(1L, requestBody)).thenReturn(newUser);
 
-        MockHttpServletRequestBuilder requestBuilder = put("/users/update/{id}", 1L)
+        MockHttpServletRequestBuilder requestBuilder = put("/users/{id}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(userJson.write(requestBody).getJson());
         MockHttpServletResponse response = mockMvc.perform(requestBuilder)
@@ -141,7 +146,7 @@ public class UserControllerTest {
 
         MockHttpServletResponse response = null;
         try {
-            MockHttpServletRequestBuilder requestBuilder = put("/api/users/{id}", 1L)
+            MockHttpServletRequestBuilder requestBuilder = put("/users/{id}", 1L)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(userJson.write(requestBody).getJson());
             response = mockMvc.perform(requestBuilder)
@@ -159,10 +164,11 @@ public class UserControllerTest {
 
     @Test
     void should_delete_the_user_when_the_user_exits() throws Exception {
-        MockHttpServletRequestBuilder requestBuilder = delete("/api/users/{id}", 1L);
+        MockHttpServletRequestBuilder requestBuilder = delete("/users/{id}", 1L);
         MockHttpServletResponse response = mockMvc.perform(requestBuilder)
                 .andReturn()
                 .getResponse();
+
         assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
@@ -170,7 +176,7 @@ public class UserControllerTest {
     void should_delete_the_user_when_the_user_does_not_exit() {
         doThrow(new UserNotFoundException()).when(userService).deleteUser(1L);
 
-        MockHttpServletRequestBuilder requestBuilder = delete("/api/tasks/{id}", 1L);
+        MockHttpServletRequestBuilder requestBuilder = delete("/tasks/{id}", 1L);
         MockHttpServletResponse response = null;
         try {
             response = mockMvc.perform(requestBuilder)
@@ -192,7 +198,7 @@ public class UserControllerTest {
 
         MockHttpServletResponse response = null;
         try {
-            MockHttpServletRequestBuilder requestBuilder = post("/api/users/{id}/tasks", 1L)
+            MockHttpServletRequestBuilder requestBuilder = post("/users/{id}/tasks", 1L)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(taskJson.write(requestBody).getJson());
             response = mockMvc.perform(requestBuilder)
@@ -213,7 +219,7 @@ public class UserControllerTest {
         List<Task> theReturnedTasks = List.of(new Task(1L, "test", false), new Task(2L, "test2", false));
         when(assignmentService.getTasksOfUserByUserId(1L)).thenReturn(theReturnedTasks);
 
-        MockHttpServletResponse response = mockMvc.perform(get("/api/users/{id}/tasks", 1L))
+        MockHttpServletResponse response = mockMvc.perform(get("/users/{id}/tasks", 1L))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andReturn()
@@ -230,7 +236,7 @@ public class UserControllerTest {
 
         MockHttpServletResponse response = null;
         try {
-            response = mockMvc.perform(get("/api/users/{id}/tasks", 1L))
+            response = mockMvc.perform(get("/users/{id}/tasks", 1L))
                     .andExpect(status().isNotFound())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                     .andReturn()
@@ -251,7 +257,7 @@ public class UserControllerTest {
 
         MockHttpServletResponse response = null;
         try {
-            MockHttpServletRequestBuilder requestBuilder = delete("/api/users/{id}/tasks", 1L);
+            MockHttpServletRequestBuilder requestBuilder = delete("/users/{id}/tasks", 1L);
             response = mockMvc.perform(requestBuilder)
                     .andReturn()
                     .getResponse();
@@ -268,7 +274,7 @@ public class UserControllerTest {
     void should_delete_all_the_tasks_of_the_user_when_the_user_exists() throws Exception {
         when(assignmentService.deleteAllTasksOfUserByUserId(1L)).thenReturn(null);
 
-        MockHttpServletRequestBuilder requestBuilder = delete("/api/users/{id}/tasks", 1L);
+        MockHttpServletRequestBuilder requestBuilder = delete("/users/{id}/tasks", 1L);
         MockHttpServletResponse response = mockMvc.perform(requestBuilder)
                 .andReturn()
                 .getResponse();
@@ -285,7 +291,7 @@ public class UserControllerTest {
 
         MockHttpServletResponse response = null;
         try {
-            MockHttpServletRequestBuilder requestBuilder = put("/api/users/{user_id}/tasks/{task_id}", 1L, 1L)
+            MockHttpServletRequestBuilder requestBuilder = put("/users/{user_id}/tasks/{task_id}", 1L, 1L)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(taskJson.write(requestBody).getJson());
             response = mockMvc.perform(requestBuilder)
@@ -307,7 +313,7 @@ public class UserControllerTest {
         when(assignmentService.updateTaskForUser(1L, 1L, requestBody)).thenThrow(new TaskNotFoundException());
         MockHttpServletResponse response = null;
         try {
-            MockHttpServletRequestBuilder requestBuilder = put("/api/users/{user_id}/tasks/{task_id}", 1L, 1L)
+            MockHttpServletRequestBuilder requestBuilder = put("/users/{user_id}/tasks/{task_id}", 1L, 1L)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(taskJson.write(requestBody).getJson());
             response = mockMvc.perform(requestBuilder)
@@ -329,7 +335,7 @@ public class UserControllerTest {
 
         MockHttpServletResponse response = null;
         try {
-            MockHttpServletRequestBuilder requestBuilder = put("/api/users/{user_id}/tasks/{task_id}", 1L, 1L)
+            MockHttpServletRequestBuilder requestBuilder = put("/users/{user_id}/tasks/{task_id}", 1L, 1L)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(taskJson.write(requestBody).getJson());
             response = mockMvc.perform(requestBuilder)
@@ -351,7 +357,7 @@ public class UserControllerTest {
         Task returnedtask = new Task(1L, "test test", false);
         when(assignmentService.updateTaskForUser(1L, 1L, requestBody)).thenReturn(returnedtask);
 
-        MockHttpServletRequestBuilder requestBuilder = put("/api/users/{user_id}/tasks/{task_id}", 1L, 1L)
+        MockHttpServletRequestBuilder requestBuilder = put("/users/{user_id}/tasks/{task_id}", 1L, 1L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(taskJson.write(requestBody).getJson());
         MockHttpServletResponse response = mockMvc.perform(requestBuilder)
@@ -365,10 +371,14 @@ public class UserControllerTest {
 
     @Test
     void should_shared_the_task_to_the_user_when_the_user_not_exist() {
+
         when(assignmentService.addSharedTask(1L, 2L)).thenThrow(new UserNotFoundException());
+        Task task = new Task("test");
         MockHttpServletResponse response = null;
         try {
-            MockHttpServletRequestBuilder requestBuilder = post("/api/users/{id}/tasks/addition/{sharedTaskId}", 1L, 2L);
+            MockHttpServletRequestBuilder requestBuilder = post("/users/{id}/tasks/addition/{sharedTaskId}", 2L, 1L)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(taskJson.write(task).getJson());
             response = mockMvc.perform(requestBuilder)
                     .andReturn()
                     .getResponse();
@@ -385,7 +395,7 @@ public class UserControllerTest {
         when(assignmentService.addSharedTask(1L, 2L)).thenThrow(new TaskNotFoundException());
         MockHttpServletResponse response = null;
         try {
-            MockHttpServletRequestBuilder requestBuilder = post("/api/users/{id}/tasks/addition/{sharedTaskId}", 1L, 2L);
+            MockHttpServletRequestBuilder requestBuilder = post("/users/{id}/tasks/addition/{sharedTaskId}", 2L, 1L);
             response = mockMvc.perform(requestBuilder)
                     .andReturn()
                     .getResponse();
@@ -402,7 +412,7 @@ public class UserControllerTest {
         Task theReturnedTask = new Task(2L, "test", false);
         Task task = new Task("test");
         when(assignmentService.addSharedTask(1L, 2L)).thenReturn(theReturnedTask);
-        MockHttpServletRequestBuilder requestBuilder = post("/api/users/{id}/tasks/addition/{sharedTaskId}", 2L, 1L)
+        MockHttpServletRequestBuilder requestBuilder = post("/users/{id}/tasks/addition/{sharedTaskId}", 2L, 1L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(taskJson.write(task).getJson());
         MockHttpServletResponse response = mockMvc.perform(requestBuilder)

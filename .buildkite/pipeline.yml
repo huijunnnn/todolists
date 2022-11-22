@@ -1,6 +1,7 @@
 steps:
-  - label: "run test"
-    command: mvn test
   - label: "build"
-    command: mvn clean package
+    command: mvn clean package -DskipTests
+  - label: "run test"
+    command: mvn clean test
+
 
